@@ -1,0 +1,128 @@
+---
+title: "Souverains"
+
+format:
+  ofce-html:
+    code-fold: true
+    code-summary: "code"
+    code-tools: false
+    code-block-border-left: true
+    code-block-bg: "#EEEEEE"
+echo: true
+freeze: false
+---
+
+```{r, include = FALSE, cache = FALSE}
+ofce::init_qmd(echo=TRUE)
+tsh <- source_data("souverains/taux_souverains_historiques.R", 
+                                           lapse = "day",
+                                           metadata = TRUE)
+
+ratings <- source_data("souverains/ratings", 
+                            lapse = "month")
+```
+
+```{r}
+#| label: fig-spreads
+#| fig-cap: Taux souverains France, Allemagne, *spread* France-Allemagne
+
+data_graph <- tsh |> 
+  pluck("data") |> 
+  filter(date >= "1995-01-01") |> 
+  mutate( date  = if_else(date <= now(), floor_date(date, unit = "month") + days(15), date)) |>
+  mutate(
+    geo = case_match(pays,
+                     "france" ~ "FR",
+                     "germany" ~ "DE",
+                     "italy" ~ "IT")) |> 
+  group_by(date, geo, pays) |> 
+  summarize(taux = mean(taux, na.rm = TRUE),
+            mois = n()>1,
+            .groups = "drop") |>
+  group_by(date) |> 
+  mutate(spread = taux - taux[geo=="DE"]) |> 
+  ungroup() |> 
+  mutate(
+    tooltip = glue(
+      "<b>{pays}</b>
+      {ifelse(mois, date_mois(date), date_jour(date))}
+      taux: {round(taux,2)}%
+      écart avec Allemagne: {round(spread,2)}%")) 
+  
+gspread <-  ggplot(data_graph |> filter(geo != "DE")) +
+  aes(x=date, y=spread, color=geo, group=geo) +
+  geom_line(linewidth = 0.5, show.legend = FALSE) +
+  geom_point_interactive(aes(tooltip = tooltip, data_id = date, fill = geo),
+                         stroke = 0.5, col = "white", size = 1, shape=21,
+                         hover_nearest = TRUE) +
+  geom_smooth(method = "lm",
+              formula = y ~1, 
+              linewidth = 0.25,
+              alpha = 0.1,
+              aes(fill = geo), show.legend = FALSE) +
+  labs(y="Taux, spread (en %)",
+    x = NULL,
+    fill=NULL)+
+  ofce::scale_color_pays("eurostat") +
+  ofce::scale_ofce_date(
+    date_breaks = "2 year", 
+    date_minor_breaks = "1 month",
+    limits = c(ymd("1995-01-01"), NA)) +
+   guides(
+     fill = marquee::guide_marquee(
+     "!!1, !!2")) +
+  ofce_caption(
+    source="investing.com",
+    note = "données téléchargées le {date_jour(tsh$date)}",
+    dpt = data_graph$date, dptf = "day")
+
+girafy(gspread)
+```
+
+```{r}
+#| label: tbl-notations-taux
+#| tbl-cap: "Taux souverains et Notations souveraines"
+
+library(countrycode)
+country_codes <- codelist|>
+  select(country = country.name.en, country.name.fr, country_code_2 = genc2c)
+
+ratings |>
+  left_join(country_codes, by = "country")|>
+  select(-country)|>
+  select(country_code_2, country = country.name.fr, everything())|>
+  arrange(-TE, `10Y`)|>
+  select(-TE)|>
+  filter(!is.na(country))|>
+  gt()|>
+    tab_options(
+      quarto.disable_processing = TRUE,
+      table.font.size = 12
+    ) |> 
+  cols_align(
+    align = "center",
+    columns = -c(country))|>
+  cols_label(
+    country = "",
+    country_code_2 = ""
+    )|>
+  tab_source_note(source_note = "Source: investing.com, tradingeconomics.com. Calculs OFCE.")|>
+  fmt_number(
+    dec_mark = ",",
+    sep_mark = ".",
+    decimals = 2
+  ) |>
+  fmt_flag(columns = country_code_2) |>
+  sub_missing(
+    missing_text = ""
+  )|>
+  opt_interactive(
+    use_search = TRUE,
+    use_filters = TRUE,
+    use_resizers = TRUE,
+    use_highlight = TRUE,
+    use_compact_mode = TRUE,
+    use_text_wrapping = FALSE,
+    use_page_size_select = TRUE
+  )
+```
