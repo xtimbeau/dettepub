@@ -111,13 +111,13 @@ interet_cna14 <- get_idbank_list("CNA-2014-CSI") |>
     filter(OPERATION %in%c("D41"), SECT_INST == "S13") |>
     pull(idbank) |>
     get_insee_idbank() |>
-    transmute(year = TIME_PERIOD, d41  = OBS_VALUE, ae  = IDBANK) |>
+    transmute(year = TIME_PERIOD |> as.numeric(), d41  = OBS_VALUE, ae  = IDBANK) |>
     pivot_wider(names_from = ae, values_from = d41) |>
     transmute(year, d41 = `010563497`-`010563498`) |>
     left_join(pib_cna14, by="year") |>
     transmute(
       time = ymd(year, truncated=2),
-      year = as.numeric(year),
+      year,
       d41 = d41/pib)  |>
     arrange(desc(year))
 
@@ -130,6 +130,19 @@ dettet_eu <- "gov_10q_ggdebt" |>
   pivot_wider(names_from = na_item, values_from = values) |>
   arrange(desc(time))
 
+pib <- melodi::get_all_data("DD_CNA_AGREGATS") |>
+  as_tibble() |>
+  filter(STO == "B1GQ",
+         TRANSFORMATION == "N",
+         UNIT_MEASURE == "XDC",
+         PRICES == "V",
+         COUNTERPART_AREA == "W0",
+         REF_SECTOR == "S1") |>
+  drop_na(OBS_VALUE) |>
+  transmute(
+    time = ymd(TIME_PERIOD, truncated = 2),
+    pib = OBS_VALUE) |>
+  arrange(desc(time))
 
 apu <- melodi::get_all_data("DD_CNA_APU") |>
   as_tibble() |>
@@ -142,7 +155,8 @@ apu <- melodi::get_all_data("DD_CNA_APU") |>
     value = OBS_VALUE,
     ACCOUNTING_ENTRY) |>
   pivot_wider(names_from = ACCOUNTING_ENTRY, values_from = value) |>
-  mutate(intnet = D - C) |>
+  left_join(pib, by = "time") |>
+  mutate(d41 = (D - C)/pib) |>
   arrange(desc(time))
 
 # interets <- apu |>
@@ -199,8 +213,8 @@ dette_ameco <- ameco |>
     g_fwd = head(slide_dbl(c(pib, last(pib)*(1+last(g_bck3))^(1:9)), ~(last(.x)/first(.x))^(1/length(.x))-1, .after=9), -9),
     dstar = g_fwd/(1+g_fwd)*dette/100) |>
   relocate(time, year) |>
-  full_join(interet_cna14, by = c("time")) |>
-  mutate(verses = ifelse(is.na(verses), 100*d41, verses)) |>
+  full_join(apu |> select(time, d41), by = c("time")) |>
+  mutate(verses = 100*d41) |>
   select(-starts_with("year")) |>
   mutate(year = year(time)) |>
   arrange(year)
@@ -268,16 +282,11 @@ gtaux <- ggplot(taux |> filter(y>=1949))+
   labs(title="Taux souverain (10 ans, en %/an)")
 
 gcharge <- ggplot(dette_ameco)+
-  geom_step(data = ~.x |> filter(year>=1978), aes(x=time, y=verses), col="dodgerblue1", direction="mid")+
-  geom_step(data = ~.x |> filter(year<1978), aes(x=time, y=verses), col="dodgerblue4", direction="mid")+
-  geom_segment(aes(y=0, yend=0, x=ym("1949 01"), xend=ym("1978 04")), size=0.1, col="grey25")+
-  geom_segment(aes(y=0, yend=0, x=ym("1978 08"), xend=ym("2024 06")), size=0.1, col="grey25")+
+  geom_step(aes(x=time, y=verses), col="dodgerblue1", direction="mid")+
+  geom_segment(aes(y=0, yend=0, x=ym("1949 01"), xend=ym("2024 06")), size=0.1, col="grey25")+
   geom_segment(aes(y=0, yend=0.05, x=ym("1949 01"), xend=ym("1949 01")), size=0.1, col="grey25")+
-  geom_segment(aes(y=0, yend=0.05, x=ym("1978 04"), xend=ym("1978 04")), size=0.1, col="grey25")+
-  geom_segment(aes(y=0, yend=0.05, x=ym("1978 08"), xend=ym("1978 08")), size=0.1, col="grey25")+
   geom_segment(aes(y=0, yend=0.05, x=ym("2024 06"), xend=ym("2024 06")), size=0.1, col="grey25")+
-  annotate(geom="text", y=0.05, x=ym("1949 2"), label = "CN 2014 INSEE", hjust=0, vjust = 0, size=1.5)+
-  annotate(geom="text", y=0.05, x=ym("1987 09"), label = "CN 2020 INSEE", hjust=0, vjust = 0, size=1.5)+
+  annotate(geom="text", y=0.05, x=ym("1949 09"), label = "CN 2020 INSEE", hjust=0, vjust = 0, size=1.5)+
   scale_x_date(breaks = ym(str_c(c(1949, seq(1960, 2010, 10), 2024), " 01")), date_labels = "%Y", limits=c(ym("1949 01"), ym("2024 12")))+
   ylim(c(0,4))+
   labs(title="Charge d'intérêts en % du PIB")
@@ -285,18 +294,22 @@ gcharge <- ggplot(dette_ameco)+
 (gecartc <- ggplot(HPDD |> filter(year>=1949))+
     geom_step(data=~filter(.x,year<1987),aes(x=time, y=100*ec), color="dodgerblue4", direction="mid")+
     geom_step(data=~filter(.x,year>=1987),aes(x=time, y=100*ec), color="dodgerblue1", direction="mid")+
+    geom_step(data=~filter(.x,year<1987),aes(x=time, y=100*ec_app), color="darkorange1", direction="mid")+
+    geom_step(data=~filter(.x,year>=1987),aes(x=time, y=100*ec_app), color="darkorange4", direction="mid")+
     geom_col(aes(x=time, y=100*ec_p), fill="red", alpha=0.1, col=NA, width=years(1)/days(1),)+
     geom_col(aes(x=time, y=100*ec_m), fill="green", alpha=0.1, width=years(1)/days(1), col=NA)+
     geom_segment(aes(y=0, yend=0, x=ym("1949 01"), xend=ym("1986 01")), size=0.1, col="grey25")+
     geom_segment(aes(y=0, yend=0.1, x=ym("1949 01"), xend=ym("1949 01")), size=0.1, col="grey25")+
     geom_segment(aes(y=0, yend=0.1, x=ym("1986 01"), xend=ym("1986 01")), size=0.1, col="grey25")+
-    annotate(geom="text", y=0.1, x=ym("1949 2"), label = "CN 2020 INSEE/CGEDD", hjust=0, vjust = 0, size=1.5)+
+    annotate(geom="text", y=0.1, x=ym("1949 2"), label = "CN 2014 INSEE/CGEDD", hjust=0, vjust = 0, size=1.5)+
     geom_segment(aes(y=0, yend=0, x=ym("1987 01"), xend=ym("2024 06")), size=0.1, col="grey25")+
     geom_segment(aes(y=0, yend=.1, x=ym("1987 01"), xend=ym("1987 01")), size=0.1, col="grey25")+
-    geom_segment(aes(y=0, yend=.1, x=ym("2024 01"), xend=ym("2024 06")), size=0.1, col="grey25")+
+    geom_segment(aes(y=0, yend=.1, x=ym("2024 06"), xend=ym("2024 06")), size=0.1, col="grey25")+
     annotate(geom="text", y=-0.1, x=ym("1988 2"), label = "CN 2020 INSEE", hjust=0, vjust = 1, size=1.5)+
     scale_x_date(breaks = ym(str_c(c(1949, seq(1960, 2010, 10), 2024), " 01")), date_labels = "%Y", limits=c(ym("1949 01"), ym("2024 12")))+
     labs(title="r - g (en %/an)"))
+
+
 
 g_altereco  <- (gdette + gtaux)/(gecartc+gcharge) +
   plot_annotation(caption="Sources: INSEE, Banque de France, FMI, J. Friggit/CGEDD \n code: github.com/OFCE/AE_11-21") &

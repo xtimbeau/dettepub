@@ -1,0 +1,121 @@
+---
+title: "La dette publique est-ce si grave ?"
+format: html
+editor: visual
+---
+
+```{r, include=FALSE}
+ofce::init_qmd()
+library(patchwork)
+```
+
+## Parle-t-on trop de la dette ?
+
+D'un Etat en faillite de François Fillon (septembre 2007), en passant par par le surendettement de François Bayrou (août 2025), la possibilité d'une intervention du FMI (Amélie de Monchalin, octobre 2025), ou encore de la dette comme instrument de l'esclavage des peuples (2010) jusqu'au dégradation par les agences de notation (12 dégradations depuis 2012, la dernière date d'octobre 2025, par S&P), la dette publique est au centre des attentions. Alternatives Economiques n'est pas en reste, adoptant souvent un ton plus pédagogique et moins alarmiste, avec de nombreux articles consacrés à la dette publique, particulièrement en 2025 (8 ou 9), un peu plus qu'en 2024 et beaucoup plus qu'en 2019 ou 2020. L'expression "dette publique", d'après Europresse, une base de données de journaux français[^1], les occurences de cette expression ont connu un pic en 2012, au plus fort de la crise des dettes souveraines en zone euro (@fig-presse). La période récente n'a pas vu de surproduction d'articles consacrés à la dette publique, Alternatives Economiques étant (relativement) plus actif sur ce sujet en 2025 ou en 2024.
+
+[^1]: 12 publications : Acteurs Publics (site web) ; Aujourd'hui en France ; La Croix ; L'Express ; Le Figaro ; L'Humanité ; Libération ; Le Monde Campus ; Le Monde ; Le Point ; Le Spectacle du Monde ; Valeurs Actuelles.
+
+```{r}
+#| label: fig-presse
+#| fig-cap: Occurences dans la presse natioanle française du terme "dette publique"
+data <- readxl::read_xlsx("altereconomie.xlsx", sheet = "europresse") |> 
+  mutate(
+    time = ymd(Année, truncated = 2) )
+
+ggplot(data) +
+  aes(x=time, y = `dette publique`)+
+  geom_line()+
+  labs(y = "Occurences par an") +
+  scale_ofce_date(date_break = "2 year", expand = expansion(mult = c(0.05, 0.05)))+
+  ofce_caption(
+    source = "Europresse", ofce =FALSE  )
+```
+
+Pourtant, il y a bien une inquiétude particulière à partir de 2024. Pour preuve le graphe 
+
+```{r}
+#| label: fig-spread
+#| fig-cap: Taux souverains et écarts de taux
+tsh <- source_data("souverains/taux_souverains_historiques.R", metadata = TRUE)
+
+
+data_graph <- tsh |> 
+  pluck("data") |> 
+  filter(date >= "1995-01-01") |> 
+  mutate( date  = if_else(date <= now(), floor_date(date, unit = "month") + days(15), date)) |>
+  mutate(
+    geo = case_match(pays,
+                     "france" ~ "FR",
+                     "germany" ~ "DE",
+                     "italy" ~ "IT")) |> 
+  group_by(date, geo, pays) |> 
+  summarize(taux = mean(taux, na.rm = TRUE),
+            mois = n()>1,
+            .groups = "drop") |>
+  group_by(date) |> 
+  mutate(spread = taux - taux[geo=="DE"]) |> 
+  ungroup() |> 
+  mutate(
+    tooltip = glue(
+      "<b>{pays}</b>
+      {ifelse(mois, date_mois(date), date_jour(date))}
+      taux: {round(taux,2)}%
+      écart avec Allemagne: {round(spread,2)}%")) 
+
+gtaux <- ggplot(data_graph) +
+  aes(x=date, y=taux, color=geo, group=geo) +
+  geom_line(linewidth = 0.5, show.legend = FALSE) +
+  labs(y="taux, en % par an",
+    x = NULL,
+    fill=NULL)+
+  ofce::scale_color_pays("eurostat") +
+  ofce::scale_ofce_date(
+    date_breaks = "2 year",
+    date_minor_breaks = "1 month") +
+   guides(
+     fill = marquee::guide_marquee(
+     "!!1, !!2, !!3")) 
+
+gspread <-  ggplot(data_graph |> filter(geo != "DE")) +
+  aes(x=date, y=spread, color=geo, group=geo) +
+  geom_segment(x = "2024-06-09" |> ymd(), xend = "2024-06-09" |> ymd(),
+               y = 0, yend =1.46,  linewidth=0.25, linetype="11", color = "grey") +
+  geom_hline(yintercept = 0, linewidth=0.25) +
+  geom_line(linewidth = 0.5, show.legend = FALSE) +
+  geom_smooth(method = "lm",
+              formula = y ~1, 
+              linewidth = 0.25,
+              linetype = "11",
+              alpha = 0.1,
+              aes(fill = geo), show.legend = FALSE) +
+  labs(y="spread, en % par an",
+    x = NULL,
+    fill=NULL)+
+  ofce::scale_color_pays("eurostat") +
+  ofce::scale_ofce_date(
+    date_breaks = "2 year",
+    date_minor_breaks = "1 month") +
+   guides(
+     color = "none",
+     linetype = "none",
+     linewidth = "none",
+     fill = marquee::guide_marquee(
+     "!!1, !!2")) 
+
+gtaux/gspread+
+  plot_layout(axes = "collect", heights = c(16, 8)) +
+  ofce_caption(
+    source="investing.com",
+    note = "données téléchargées le {date_jour(tsh$date)}",
+    dpt = data_graph$date, dptf = "day")
+
+```
+
+
+Mais, bien qu'une  on peut se sentir rapidement perdu dans ce sujet qui malgré tout semble au centre de l'actualité budgétaire. A moins que plus que de la dette, il faudrait peut être se préoccuper du déficit public et de notre capacité à définir et à voter  des stratégies budgétaires.
+
+## La dynamique mystérieuse de la dette
+
+## Equilibrer l'épargne nationale
+
+## Quelles règles de politique budgétaire ?
