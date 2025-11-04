@@ -23,7 +23,7 @@ D'un Etat en faillite de François Fillon (septembre 2007), en passant par par l
 
 ```{r}
 #| label: fig-presse
-#| fig-cap: Occurences dans la presse natioanle française du terme "dette publique"
+#| fig-cap: Occurences dans la presse nationale française du terme "dette publique"
 #| fig-asp: 0.6
 
 data <- readxl::read_xlsx("altereconomie.xlsx", sheet = "europresse") |> 

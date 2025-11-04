@@ -39,6 +39,49 @@ ul.task-list li input[type="checkbox"] {
 <link href="ae dette_files/libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="ae dette_files/libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <meta name="citation_title" content="La dette publique est-ce si grave ?">
 <meta name="citation_language" content="fr">
@@ -86,10 +129,10 @@ ul.task-list li input[type="checkbox"] {
 
 
 <div class="no-row-height column-margin column-container"><div class="margin-aside">
-<p>1124 mots</p>
+<p>1464 mots</p>
 </div></div><section id="parle-t-on-trop-de-la-dette" class="level2 page-columns page-full" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="parle-t-on-trop-de-la-dette"><span class="header-section-number">1</span> Parle-t-on trop de la <span style="white-space:nowrap">dette ?</span></h2>
-<p>D’un Etat en faillite de François Fillon (septembre 2007), en passant par par le surendettement de François Bayrou (août 2025), la possibilité d’une intervention du FMI (Amélie de Monchalin, octobre 2025), ou encore de la dette comme instrument de l’esclavage des peuples (2010) jusqu’au dégradation par les agences de notation (12 dégradations depuis 2012, la dernière date d’octobre 2025, par S&amp;P), la dette publique est au centre des attentions. Alternatives Economiques n’est pas en reste, adoptant souvent un ton plus pédagogique et moins alarmiste, avec de nombreux articles consacrés à la dette publique, particulièrement en 2025 (8 ou 9), un peu plus qu’en 2024 et beaucoup plus qu’en 2019 ou 2020. L’expression <span style="white-space:nowrap">« </span>dette publique<span style="white-space:nowrap"> »</span>, d’après Europresse, une base de données de journaux français<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, les occurrences de cette expression ont connu un pic en 2012, au plus fort de la crise des dettes souveraines en zone euro (<a href="#fig-presse" class="quarto-xref">graphique&nbsp;1</a>). La période récente n’a pas vu de surproduction d’articles consacrés à la dette publique, Alternatives Economiques étant (relativement) plus actif sur ce sujet en 2025 ou en 2024.</p>
+<p>D’un Etat en faillite de François Fillon (septembre 2007), en passant par par le surendettement de François Bayrou (août 2025), la possibilité d’une intervention du FMI (Amélie de Monchalin, octobre 2025), ou encore de la dette comme instrument de l’esclavage des peuples (2010) jusqu’au dégradation par les agences de notation (11 dégradations depuis la perte du triple A en 2012, la dernière date d’octobre 2025, par S&amp;P), la dette publique est au centre des attentions. Alternatives Economiques n’est pas en reste, adoptant souvent un ton plus pédagogique et moins alarmiste, avec de nombreux articles consacrés à la dette publique, particulièrement en 2025 (8 ou 9), un peu plus qu’en 2024 et beaucoup plus qu’en 2019 ou 2020. L’expression <span style="white-space:nowrap">« </span>dette publique<span style="white-space:nowrap"> »</span>, d’après Europresse, une base de données de journaux français<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, les occurrences de cette expression ont connu un pic en 2012, au plus fort de la crise des dettes souveraines en zone euro (<a href="#fig-presse" class="quarto-xref">graphique&nbsp;1</a>). La période récente n’a pas vu de surproduction d’articles consacrés à la dette publique, Alternatives Economiques étant (relativement) plus actif sur ce sujet en 2025 ou en 2024.</p>
 <div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;12 <span style="white-space:nowrap">publications :</span> Acteurs Publics (site <span style="white-space:nowrap">web) ;</span> Aujourd’hui en <span style="white-space:nowrap">France ;</span> La <span style="white-space:nowrap">Croix ;</span> <span style="white-space:nowrap">L’Express ;</span> Le <span style="white-space:nowrap">Figaro ;</span> <span style="white-space:nowrap">L’Humanité ;</span> <span style="white-space:nowrap">Libération ;</span> Le Monde <span style="white-space:nowrap">Campus ;</span> Le <span style="white-space:nowrap">Monde ;</span> Le <span style="white-space:nowrap">Point ;</span> Le Spectacle du <span style="white-space:nowrap">Monde ;</span> Valeurs Actuelles.</p></div></div><div class="cell">
 <div class="cell-output-display">
 <div id="fig-presse" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="htb">
@@ -125,7 +168,10 @@ Graphique&nbsp;2: Taux souverains et écarts de taux
 <section id="la-dynamique-contre-intuitive-de-la-dette" class="level2 page-columns page-full" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="la-dynamique-contre-intuitive-de-la-dette"><span class="header-section-number">2</span> La dynamique contre intuitive de la dette</h2>
 <p>Le débat sur la dette publique est parfois confus, la confusion découlant de l’analogie que chacun fait quand il s’agit de la dette avec sa situation personnelle ou celle d’une entité comme une entreprise. La logique de la dette d’un agent économique qui n’est pas à l’échelle macro économique est assez <span style="white-space:nowrap">simple :</span> c’est le résultat de l’accumulation de déficit ou de surplus, différence entre les recettes et les dépenses. Déficit, ressources, dépenses sont indépendants et n’interagissent que faiblement. La durée de vie de l’agent est finie et donc sa dette doit un jour ou l’autre être liquidée. La dette publique est celle d’un Etat, dont les recettes et les dépenses interagissent fortement et dont la durée de vie est <span style="white-space:nowrap">infinie –</span> ou du moins la question de sa liquidation ne se pose pas. Ainsi, la dette publique française a été continuement respectée à travers les siècles, y compris au passage de la révolution française de <span style="white-space:nowrap">1789 –</span> la dette royale est devenu la dette de la <span style="white-space:nowrap">République –</span> avec quelques défauts partiels explicites, le dernier datant de 1797 (banqueroute des deux tiers)<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. Passer de l’analyse parfois qualifiée, avec un brin de mépris, de <span style="white-space:nowrap">« </span>ménagère<span style="white-space:nowrap"> »</span>, à l’approche macroéconomique bouscule les préconceptions que l’on peut avoir.</p>
-<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;On peut assimiler une dévaluation à un défaut partiel sur la dette publique, mais uniquement pour les agents non résidents. L’inflation érode également la valeur de la dette publique et peut être considérée comme un défaut bien qu’aucun de ces deux évènements ne constitue un évènement de crédit en soi.</p></div><div id="fn3"><p><sup>3</sup>&nbsp;Agence France Trésor, dette négociable de l’Etat.</p></div></div><p>Parce que la dette publique persiste sur une longue période, il est impératif de prendre en compte la dynamique de la référence. La première est celle des prix ou l’inflation. Chaque année, l’inflation modifie la mesure en euro. Une inflation positive signifie qu’un euro vaut chaque année un peu moins. Pour la dette publique, cela implique que l’endettement d’hier doit être réduit de l’inflation, c’est la taxe inflationniste. Cette taxe bénéficie à tout emprunteur dès que le contrat qui le lie à son créancier est écrit en termes <span style="white-space:nowrap">nominaux –</span> et avec un taux non indexé. Un contre exemple de dette sur laquelle ne s’applique pas la taxe inflationniste est le contrat d’OATi, les Obligations Assimilables du Trésor indexés. Puisque la valeur finalement remboursée est augmentée de l’inflation, la taxe inflationniste ne s’y applique pas. Les OATi représentent aujourd’hui 10% de l’encours de dette<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. Pour conserver une dette de poids constant, il faut donc prendre en compte l’effet de cette taxe <span style="white-space:nowrap">inflationniste –</span> sur les 90% de la dette publique française qui n’est pas indexée. L’inflation n’est pas le seul changement à prendre en compte et l’augmentation du</p>
+<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;On peut assimiler une dévaluation à un défaut partiel sur la dette publique, mais uniquement pour les agents non résidents. L’inflation érode également la valeur de la dette publique et peut être considérée comme un défaut bien qu’aucun de ces deux évènements ne constitue un évènement de crédit en soi.</p></div><div id="fn3"><p><sup>3</sup>&nbsp;Source Agence France Trésor, dette négociable de l’Etat.</p></div></div><p>Parce que la dette publique persiste sur une longue période, il est impératif de prendre en compte la dynamique de la référence. La première est celle des prix ou l’inflation. Chaque année, l’inflation modifie la mesure en euro. Une inflation positive signifie qu’un euro vaut chaque année un peu moins. Pour la dette publique, cela implique que l’endettement d’hier doit être réduit de l’inflation, c’est la taxe inflationniste. Cette taxe bénéficie à tout emprunteur dès que le contrat qui le lie à son créancier est écrit en termes <span style="white-space:nowrap">nominaux –</span> et avec un taux non indexé. Un contre exemple de dette sur laquelle ne s’applique pas la taxe inflationniste est le contrat d’OATi, les Obligations Assimilables du Trésor indexés. Puisque la valeur finalement remboursée est augmentée de l’inflation, la taxe inflationniste ne s’y applique pas. Les OATi représentent aujourd’hui 10% de l’encours de dette<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. Pour conserver une dette de poids constant, il faut donc prendre en compte l’effet de cette taxe <span style="white-space:nowrap">inflationniste –</span> sur les 90% de la dette publique française qui n’est pas indexée.</p>
+<p>L’inflation n’est pas le seul changement à prendre en compte et l’augmentation du PIB joue le même rôle. Ainsi, pour maintenir une dette constante relativement au PIB, on tient compte du taux de croissance nominal, ajoutant à l’inflation la croissance en volume de l’activité. Dans une situation d’équilibre entre les recettes et les dépenses hors la charge d’intérêts, la dette s’accroit si le taux d’intérêt souverain est supérieur au taux croissance et décroit dans le cas inverse. Le <a href="#fig-dette" class="quarto-xref">graphique&nbsp;3</a> illustre ces notions. Le paneau (c) est le ratio dette sur PIB pour la France de 1995 à 2025, en trimestriel.</p>
+<p>Le paneau (a) représente l’écart entre le tauix d’intérêt et le taux de croissance, pendant du fameux <span class="math inline">r&gt;g</span> de Thomas Piketty, l’écart critique, appliqué ici à la dette publique. Il mesure l’intensité de l’effet boule de neige ou de son opposé, qui déprécie la dette par la croissance ou l’inflation. Les périodes en rouge sont celles où l’effet boule de neige pèse sur la dynamique de la dette publique et en vert où il l’allège. Deux notions peuvent être employées suivant qu’on prend le taux souverain courant (le trait plein) ou le taux pondéré sur la dette publique (aussi appelé taux apparent) qui intègre les taux contractés par le passé pour chaque maturité de la dette publique. Cet écart critique a été très favorable à partir de 2012, dès lors que la politique monétaire de la BCE s’est clarifiée et que les taux souverains ont baissé suite aux politiques monétaires non conventionnelles. L’inflation apparue à la fin de 2021, et qui a fortement accéléré après l’invasion de l’Ukraine par la Russie, transitant principalement par la hausse des énergies fossiles (gaz naturel et pétrole), a provoqué une bascule dans la politique monétaire, une hausse des taux directeurs et des taux souverains (voir <a href="#fig-spread" class="quarto-xref">graphique&nbsp;2</a>).</p>
+<p>Le paneau (b) synthétise la dynamique de la dette. Le solde stabilisant la dette publique découle de l’écart critique et du niveau de la dette. Il s’accroît significativement avec la hausse des taux souverains après avoiur beaucopup baissé pendant l’épisode inflationniste, où la taxe inflationniste était maximale.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-dette" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-pos="htb">
