@@ -18,6 +18,8 @@ D'un Etat en faillite de François Fillon (septembre 2007), en passant par par l
 ```{r}
 #| label: fig-presse
 #| fig-cap: Occurences dans la presse natioanle française du terme "dette publique"
+#| fig-asp: 0.6
+
 data <- readxl::read_xlsx("altereconomie.xlsx", sheet = "europresse") |> 
   mutate(
     time = ymd(Année, truncated = 2) )
@@ -31,17 +33,22 @@ ggplot(data) +
     source = "Europresse", ofce =FALSE  )
 ```
 
-Pourtant, il y a bien une inquiétude particulière à partir de 2024. Pour preuve le graphe 
+Pourtant, il y a bien une inquiétude particulière à partir de 2024. Pour preuve le graphe @fig-spread indique la chronique des taux souverains pour trois pays de la zone euro depuis 2007. L'écart entre le taux français ou le taux italien et le taux de référence allemand est pertinent. Les dettes publiques en zone euro ne sont pas soumises à un risque de change, sont protégées par le même appareil légal et mesurent assez directement une très faible mais non nulle probabilité d'un défaut souverain.
+
+Ce défaut qui pourrait être total, ou plus probablement partiel, avec ou sans sortie de la zone euro, repose sur le précédent grec au moment de la crise des dettes souveraines (2009-2012). Après cette crise, la Banque Centrale Européenne, mais aussi les Etats membres, ont affirmé leur engagement dans l'euro. La Banque Centrale, appuyée par les Banques Centrales Nationales, membres de l'Eurosystème, s'est doté d'instruments pour intervenir sur les marchés de dette publique européenne, portant la part de la dette détenue par les banques centrales – et donc neutralisée – à plus de 20%. Le Mécanisme de Stabilité Européenne (MES) dote l'Eurogroupe d'un important matelas pour intervenir, au délà des banques centrales, et ce matelas peut être accru si nécessaire par une décision des parlements nationaux. Cet épisode et les politiques, les doctrines et les instruments qui ont été inventés ou renforcés a renforcé la Zone euro et repousse le spectre d'un défaut d'un Etat membre. Ceux-ci sont maintenant largement à l'abri de la pression des marchés, ou du moins le sont collectivement, appuyés par une Banque Centrale puissante à même de désamorcer très rapidement toute spéculation.
+
+Mais, la réduction unilatérale de la dette publique grecque imposée aux créanciers privés reste une possibilité pour une crise de dette souveraine future. Si un pays venait à ne pas pouvoir contrôler sa dette, l'intervention des Etats membres et de la BCE – probablement sans l'appui du FMI – pourrait inclure une telle dépréciation. Un autre scénario qui n'est pas à exclure complètement est celui d'une sortie volontaire de la zone Euro d'un Etat membre. En effet, en cas de conflit profond avec les autorités européennes, ce qui est surtout une menace dans une négociation dure, pourrait se concrétiser. La suspension de la circulation des capitaux à Malte
 
 ```{r}
 #| label: fig-spread
 #| fig-cap: Taux souverains et écarts de taux
+#| fig-asp: 0.8
 tsh <- source_data("souverains/taux_souverains_historiques.R", metadata = TRUE)
 
 
 data_graph <- tsh |> 
   pluck("data") |> 
-  filter(date >= "1995-01-01") |> 
+  filter(date >= "2007-01-01") |> 
   mutate( date  = if_else(date <= now(), floor_date(date, unit = "month") + days(15), date)) |>
   mutate(
     geo = case_match(pays,
@@ -111,8 +118,7 @@ gtaux/gspread+
 
 ```
 
-
-Mais, bien qu'une  on peut se sentir rapidement perdu dans ce sujet qui malgré tout semble au centre de l'actualité budgétaire. A moins que plus que de la dette, il faudrait peut être se préoccuper du déficit public et de notre capacité à définir et à voter  des stratégies budgétaires.
+Mais, bien qu'une on peut se sentir rapidement perdu dans ce sujet qui malgré tout semble au centre de l'actualité budgétaire. A moins que plus que de la dette, il faudrait peut être se préoccuper du déficit public et de notre capacité à définir et à voter des stratégies budgétaires.
 
 ## La dynamique mystérieuse de la dette
 
