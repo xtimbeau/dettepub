@@ -16,22 +16,21 @@ contributes:
           title-block-published: "Publié le"
           title-block-modified: "Modifié le"
           toc-title: "Sur cette page"
+          crossref-fig-prefix: graphique
+          crossref-tbl-prefix: tableau
+          crossref-eq-prefix: équation
+          crossref-sec-prefix: section
+          crossref-tip-prefix: encadré
+          crossref-fig-title: "Graphique"
+          crossref-tip-title: "Encadré"
+          crossref-title-delim: "."
+          crossref-tbl-title: "Tableau"
+          crossref-lof-title: Graphiques
+          crossref-lot-title: Tableaux
       fig-asp: 0.61
       cap-location: top
       citation:
         type: article-journal
-      crossref:
-        fig-prefix: figure
-        tbl-prefix: tableau
-        eq-prefix: équation
-        sec-prefix: section
-        tip-prefix: encadré
-        fig-title: "**Figure**"
-        tip-title: "**Encadré**"
-        title-delim: "**.**"
-        tbl-title: "**Tableau**"
-        lof-title: Figures
-        lot-title: Tableaux
       logo: ofce.png
       filters:
         - nameref

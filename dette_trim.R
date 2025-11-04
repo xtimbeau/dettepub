@@ -28,7 +28,8 @@ nego <- get_idbank_list("DETTE-NEGOCIABLE-ETAT") |>
   select(time = DATE, code, value = OBS_VALUE) |>
   pivot_wider(names_from = code, values_from = value ) |>
   mutate(across(-time, ~.x/total))
-nego |> ggplot() +geom_line(aes(x=time, y = inflation, group=1)) + scale_ofce_date()
+
+# nego |> ggplot() +geom_line(aes(x=time, y = inflation, group=1)) + scale_ofce_date()
 
 pib <-  "CNT-2020-PIB-EQB-RF" |>
   get_idbank_list() |>
@@ -104,11 +105,11 @@ dette_trim <- "DETTE-TRIM-APU-2020" |>
     pib4 = slider::slide_dbl(pib/1000, ~mean(.x)*4, .before=3),
     d41 = d41/pib,
     g = pib/lag(pib) - 1,
-    g4 = pib/lag(pib, 4) - 1,
-    g_bck3 = (pib/lag(pib, 4*2))^(1/7)-1,
-    g_fwd = head(slider::slide_dbl(c(pib, last(pib)*(1+last(g_bck3))^(1:39)),
+    g4 = pib4/lag(pib4, 4) - 1,
+    g_bck2 = (pib/lag(pib, 8))^(1/7)-1,
+    g_fwd = head(slider::slide_dbl(c(pib, last(pib)*cumprod(rep(1+last(g_bck2), 39))),
                            ~(last(.x)/first(.x))^(1/9)-1,
-                           .after=39), -39),
+                           .after=40), -39),
     dm = maastricht/pib4,
     dn = nette/pib4 ) |>
   arrange(time) |>
@@ -123,46 +124,5 @@ dette_trim <- "DETTE-TRIM-APU-2020" |>
     sppp = ifelse(ss>def_ma, "p", "n"),
     time = factor(time, time))
 
-gec <- ggplot(dette_trim) +
-  aes(x=time) +
-  geom_col(aes(y=ec, fill = ecp), alpha = 0.25, width=1, show.legend = FALSE) +
-  geom_step(aes(y = ec, group=1), direction = "mid", linewidth = 0.5) +
-  geom_step(aes(y = ec_app, group=1), linewidth = 0.5, color = "gray25", linetype ="11") +
-  labs(y="% par an",
-      subtitle= "r - g") +
-  scale_fill_manual(values = c("p" = "red", "n"= "green"))+
-  scale_x_discrete(
-    breaks = str_c(seq(1995, 2025, by=5), "-01-01"),
-    labels = seq(1995, 2025, by=5) )+
-  scale_y_continuous(labels = label_percent(1))
 
-gdm <- ggplot(dette_trim) +
-  aes(x=time) +
-  geom_step(aes(y = dm, group=1), direction = "mid", linewidth = 0.5) +
-  scale_fill_manual(values = c("p" = "red", "n"= "green"))+
-  labs(y="% du PIB",
-      subtitle= "Dette publique (Maastricht)") +
-  scale_x_discrete(
-    breaks = str_c(seq(1995, 2025, by=5), "-01-01"),
-    labels = seq(1995, 2025, by=5) )+
-  scale_y_continuous(labels = label_percent(1))
-
-gssp <- ggplot(dette_trim) +
-  aes(x=time) +
-  geom_step(aes(y = ss, group=1),
-            direction = "mid", linewidth = 0.5, linetype = '11', color = "grey25") +
-  geom_step(aes(y = def_ma, group=1), direction = "mid", linewidth = 0.5) +
-  geom_rect(aes(width = 1, ymin = def_ma, ymax=ss, fill = sppp),
-            linewidth = 0.5,  color = NA, alpha = 0.25, show.legend = FALSE) +
-  scale_fill_manual(values = c("p" = "orange", "n"= "blue"))+
-  labs(y="% du PIB",
-      subtitle= "Solde et solde stabilisant la dette") +
-  scale_x_discrete(
-    breaks = str_c(seq(1995, 2025, by=5), "-01-01"),
-    labels = seq(1995, 2025, by=5) )+
-  scale_y_continuous(labels = label_percent(1))
-
-gfinal <- gec/gssp/gdm +
-  plot_layout(axes = "collect_x")
-
-return(gfinal)
+return(list(trim = dette_trim, nego = nego))

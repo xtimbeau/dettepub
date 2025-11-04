@@ -1,7 +1,9 @@
 ---
 title: "La dette publique est-ce si grave ?"
-format: html
+format: wp-html
 editor: visual
+filters:
+  - wordcount
 ---
 
 ```{r, include=FALSE}
@@ -9,9 +11,13 @@ ofce::init_qmd()
 library(patchwork)
 ```
 
+::: aside
+{{wordcount}} mots
+:::
+
 ## Parle-t-on trop de la dette ?
 
-D'un Etat en faillite de François Fillon (septembre 2007), en passant par par le surendettement de François Bayrou (août 2025), la possibilité d'une intervention du FMI (Amélie de Monchalin, octobre 2025), ou encore de la dette comme instrument de l'esclavage des peuples (2010) jusqu'au dégradation par les agences de notation (12 dégradations depuis 2012, la dernière date d'octobre 2025, par S&P), la dette publique est au centre des attentions. Alternatives Economiques n'est pas en reste, adoptant souvent un ton plus pédagogique et moins alarmiste, avec de nombreux articles consacrés à la dette publique, particulièrement en 2025 (8 ou 9), un peu plus qu'en 2024 et beaucoup plus qu'en 2019 ou 2020. L'expression "dette publique", d'après Europresse, une base de données de journaux français[^1], les occurences de cette expression ont connu un pic en 2012, au plus fort de la crise des dettes souveraines en zone euro (@fig-presse). La période récente n'a pas vu de surproduction d'articles consacrés à la dette publique, Alternatives Economiques étant (relativement) plus actif sur ce sujet en 2025 ou en 2024.
+D'un Etat en faillite de François Fillon (septembre 2007), en passant par par le surendettement de François Bayrou (août 2025), la possibilité d'une intervention du FMI (Amélie de Monchalin, octobre 2025), ou encore de la dette comme instrument de l'esclavage des peuples (2010) jusqu'au dégradation par les agences de notation (11 dégradations depuis la perte du triple A en 2012, la dernière date d'octobre 2025, par S&P), la dette publique est au centre des attentions. Alternatives Economiques n'est pas en reste, adoptant souvent un ton plus pédagogique et moins alarmiste, avec de nombreux articles consacrés à la dette publique, particulièrement en 2025 (8 ou 9), un peu plus qu'en 2024 et beaucoup plus qu'en 2019 ou 2020. L'expression "dette publique", d'après Europresse, une base de données de journaux français[^1], les occurrences de cette expression ont connu un pic en 2012, au plus fort de la crise des dettes souveraines en zone euro (@fig-presse). La période récente n'a pas vu de surproduction d'articles consacrés à la dette publique, Alternatives Economiques étant (relativement) plus actif sur ce sujet en 2025 ou en 2024.
 
 [^1]: 12 publications : Acteurs Publics (site web) ; Aujourd'hui en France ; La Croix ; L'Express ; Le Figaro ; L'Humanité ; Libération ; Le Monde Campus ; Le Monde ; Le Point ; Le Spectacle du Monde ; Valeurs Actuelles.
 
@@ -35,9 +41,9 @@ ggplot(data) +
 
 Pourtant, il y a bien une inquiétude particulière à partir de 2024. Pour preuve le graphe @fig-spread indique la chronique des taux souverains pour trois pays de la zone euro depuis 2007. L'écart entre le taux français ou le taux italien et le taux de référence allemand est pertinent. Les dettes publiques en zone euro ne sont pas soumises à un risque de change, sont protégées par le même appareil légal et mesurent assez directement une très faible mais non nulle probabilité d'un défaut souverain.
 
-Ce défaut qui pourrait être total, ou plus probablement partiel, avec ou sans sortie de la zone euro, repose sur le précédent grec au moment de la crise des dettes souveraines (2009-2012). Après cette crise, la Banque Centrale Européenne, mais aussi les Etats membres, ont affirmé leur engagement dans l'euro. La Banque Centrale, appuyée par les Banques Centrales Nationales, membres de l'Eurosystème, s'est doté d'instruments pour intervenir sur les marchés de dette publique européenne, portant la part de la dette détenue par les banques centrales – et donc neutralisée – à plus de 20%. Le Mécanisme de Stabilité Européenne (MES) dote l'Eurogroupe d'un important matelas pour intervenir, au délà des banques centrales, et ce matelas peut être accru si nécessaire par une décision des parlements nationaux. Cet épisode et les politiques, les doctrines et les instruments qui ont été inventés ou renforcés a renforcé la Zone euro et repousse le spectre d'un défaut d'un Etat membre. Ceux-ci sont maintenant largement à l'abri de la pression des marchés, ou du moins le sont collectivement, appuyés par une Banque Centrale puissante à même de désamorcer très rapidement toute spéculation.
+Ce défaut qui pourrait être total, ou plus probablement partiel, avec ou sans sortie de la zone euro, repose sur le précédent grec au moment de la crise des dettes souveraines (2009-2012). Après cette crise, la Banque Centrale Européenne, mais aussi les Etats membres, ont affirmé leur engagement dans l'euro. La Banque Centrale, appuyée par les Banques Centrales Nationales, membres de l'Eurosystème, s'est doté d'instruments pour intervenir sur les marchés de dette publique européenne, portant la part de la dette détenue par les banques centrales – et donc neutralisée – à plus de 20%. Le Mécanisme de Stabilité Européenne (MES) dote l'Eurogroupe d'un important matelas pour intervenir, au delà des banques centrales, et ce matelas peut être accru si nécessaire par une décision des parlements nationaux. Cet épisode et les politiques, les doctrines et les instruments qui ont été inventés ou renforcés a renforcé la Zone euro et repousse le spectre d'un défaut d'un Etat membre. Ceux-ci sont maintenant largement à l'abri de la pression des marchés, ou du moins le sont collectivement, appuyés par une Banque Centrale puissante à même de désamorcer très rapidement toute spéculation.
 
-Mais, la réduction unilatérale de la dette publique grecque imposée aux créanciers privés reste une possibilité pour une crise de dette souveraine future. Si un pays venait à ne pas pouvoir contrôler sa dette, l'intervention des Etats membres et de la BCE – probablement sans l'appui du FMI – pourrait inclure une telle dépréciation. Un autre scénario qui n'est pas à exclure complètement est celui d'une sortie volontaire de la zone Euro d'un Etat membre. En effet, en cas de conflit profond avec les autorités européennes, ce qui est surtout une menace dans une négociation dure, pourrait se concrétiser. La suspension de la circulation des capitaux à Malte
+Mais, la réduction unilatérale de la dette publique grecque imposée aux créanciers privés reste une possibilité pour une crise de dette souveraine future. Si un pays venait à ne pas pouvoir contrôler sa dette, l'intervention des Etats membres et de la BCE – probablement sans l'appui du FMI – pourrait inclure une telle dépréciation. Un autre scénario qui n'est pas à exclure complètement est celui d'une sortie volontaire de la zone Euro d'un Etat membre. En effet, en cas de conflit profond avec les autorités européennes, ce qui est surtout une menace dans une négociation dure, pourrait se concrétiser dans un scénario d'escalade. Ces éventualités sont peu probables, mais elles expliquent les hausses modérées des écarts de taux. Le @fig-spread illustre la hausse de l'écart de taux entre la France et l'Allemagne en le remettant dans le contexte historique. L'écart qui s'est installé après la dissolution de l'Assemblée Nationale française en juin 2025 (0,8% en octobre 2025) est plus élevé qu'avant la crise financière de 2008 mais plus bas qu'au pic atteint en novembre 2011 (1,43%). Comme l'illustre le @fig-spread, ce sont bien les évènements politiques marqués d'un triangle rouge foncé qui "font" l'écart de taux plus que les dégradations des agences de notations (triangle vert foncé).
 
 ```{r}
 #| label: fig-spread
@@ -69,6 +75,27 @@ data_graph <- tsh |>
       taux: {round(taux,2)}%
       écart avec Allemagne: {round(spread,2)}%")) 
 
+deg <- tribble(
+  ~date, ~agence, ~note, ~type, 
+  "2012-01-13", "S&P", "AA+", "r",
+  "2012-11-19", "Moody's", "Aa1", "r",
+  "2013-07-01", "Fitch", "AA+", "r",
+  "2013-11-08", "S&P", "AA", "r",
+  "2024-05-31", "S&P", "AA-", "r",
+  "2025-10-17", "S&P", "A+", "r",
+  "2014-12-14", "Fitch", "AA", "r",
+  "2015-09-18", "Moody's", "Aa2", "r",
+  "2024-12-01", "Moody's", "Aa3", "r",
+  "2023-04-28", "Fitch", "AA-", "r",
+  "2025-09-12", "Fitch", "A+", "r",
+  "2024-06-09", "gov", NA, "p",
+  "2025-09-08", "gov", NA, "p",
+  "2025-10-06", "gov", NA, "p") |> 
+  mutate(
+    date = ymd(date),
+    time = floor_date(date, "month")+days(15)) |> 
+  left_join(data_graph |> filter(geo == "FR") |> select(time = date, taux, spread), by = c("time"))
+
 gtaux <- ggplot(data_graph) +
   aes(x=date, y=taux, color=geo, group=geo) +
   geom_line(linewidth = 0.5, show.legend = FALSE) +
@@ -84,43 +111,126 @@ gtaux <- ggplot(data_graph) +
      "!!1, !!2, !!3")) 
 
 gspread <-  ggplot(data_graph |> filter(geo != "DE")) +
-  aes(x=date, y=spread, color=geo, group=geo) +
-  geom_segment(x = "2024-06-09" |> ymd(), xend = "2024-06-09" |> ymd(),
-               y = 0, yend =1.46,  linewidth=0.25, linetype="11", color = "grey") +
+  geom_segment(
+    data = deg, 
+    aes( x = date, xend = date, y=0, yend =spread, group=NULL, color = type),
+    linewidth=0.5, linetype="11", show.legend = FALSE) +
+  geom_point(data = deg,aes(x=date, y=0.075, color = type), shape = 17, size = 1, show.legend = FALSE) +
+  scale_color_manual(values = c("p" = "firebrick", "r"="seagreen")) + 
+  ggnewscale::new_scale_color() +
   geom_hline(yintercept = 0, linewidth=0.25) +
-  geom_line(linewidth = 0.5, show.legend = FALSE) +
-  geom_smooth(method = "lm",
-              formula = y ~1, 
-              linewidth = 0.25,
-              linetype = "11",
-              alpha = 0.1,
-              aes(fill = geo), show.legend = FALSE) +
+  geom_line(aes(x=date, y=spread, color=geo, group=geo), linewidth = 0.5, show.legend = FALSE) +
+  geom_smooth(
+    aes(x=date, y=spread, color=geo, group=geo, fill = geo),
+    method = "lm",
+    formula = y ~1, 
+    linewidth = 0.25,
+    linetype = "11",
+    alpha = 0.1,
+    show.legend = FALSE) +
   labs(y="spread, en % par an",
-    x = NULL,
-    fill=NULL)+
+       x = NULL,
+       fill=NULL)+
   ofce::scale_color_pays("eurostat") +
   ofce::scale_ofce_date(
     date_breaks = "2 year",
     date_minor_breaks = "1 month") +
-   guides(
-     color = "none",
-     linetype = "none",
-     linewidth = "none",
-     fill = marquee::guide_marquee(
-     "!!1, !!2")) 
+  guides(
+    color = "none",
+    linetype = "none",
+    linewidth = "none",
+    fill = marquee::guide_marquee(
+      "!!1, !!2")) 
 
 gtaux/gspread+
   plot_layout(axes = "collect", heights = c(16, 8)) +
   ofce_caption(
     source="investing.com",
-    note = "données téléchargées le {date_jour(tsh$date)}",
+    note = "Les évènements dégradation sont indiqués par {.seagreen des triangles vert} et les évènements politiques (dissolution, défiance, démission de Lecornu) sont indiqués par des {.firebrick triangles rouge}. Données téléchargées le {date_jour(tsh$date)}",
     dpt = data_graph$date, dptf = "day")
 
 ```
 
-Mais, bien qu'une on peut se sentir rapidement perdu dans ce sujet qui malgré tout semble au centre de l'actualité budgétaire. A moins que plus que de la dette, il faudrait peut être se préoccuper du déficit public et de notre capacité à définir et à voter des stratégies budgétaires.
+## La dynamique contre intuitive de la dette
 
-## La dynamique mystérieuse de la dette
+Le débat sur la dette publique est parfois confus, la confusion découlant de l'analogie que chacun fait quand il s'agit de la dette avec sa situation personnelle ou celle d'une entité comme une entreprise. La logique de la dette d'un agent économique qui n'est pas à l'échelle macro économique est assez simple : c'est le résultat de l'accumulation de déficit ou de surplus, différence entre les recettes et les dépenses. Déficit, ressources, dépenses sont indépendants et n'interagissent que faiblement. La durée de vie de l'agent est finie et donc sa dette doit un jour ou l'autre être liquidée. La dette publique est celle d'un Etat, dont les recettes et les dépenses interagissent fortement et dont la durée de vie est infinie – ou du moins la question de sa liquidation ne se pose pas. Ainsi, la dette publique française a été continuement respectée à travers les siècles, y compris au passage de la révolution française de 1789 – la dette royale est devenu la dette de la République – avec quelques défauts partiels explicites, le dernier datant de 1797 (banqueroute des deux tiers)[^2]. Passer de l'analyse parfois qualifiée, avec un brin de mépris, de "ménagère", à l'approche macroéconomique bouscule les préconceptions que l'on peut avoir.
+
+[^2]: On peut assimiler une dévaluation à un défaut partiel sur la dette publique, mais uniquement pour les agents non résidents. L'inflation érode également la valeur de la dette publique et peut être considérée comme un défaut bien qu'aucun de ces deux évènements ne constitue un évènement de crédit en soi.
+
+Parce que la dette publique persiste sur une longue période, il est impératif de prendre en compte la dynamique de la référence. La première est celle des prix ou l'inflation. Chaque année, l'inflation modifie la mesure en euro. Une inflation positive signifie qu'un euro vaut chaque année un peu moins. Pour la dette publique, cela implique que l'endettement d'hier doit être réduit de l'inflation, c'est la taxe inflationniste. Cette taxe bénéficie à tout emprunteur dès que le contrat qui le lie à son créancier est écrit en termes nominaux – et avec un taux non indexé. Un contre exemple de dette sur laquelle ne s'applique pas la taxe inflationniste est le contrat d'OATi, les Obligations Assimilables du Trésor indexés. Puisque la valeur finalement remboursée est augmentée de l'inflation, la taxe inflationniste ne s'y applique pas. Les OATi représentent aujourd'hui 10% de l'encours de dette[^3]. Pour conserver une dette de poids constant, il faut donc prendre en compte l'effet de cette taxe inflationniste – sur les 90% de la dette publique française qui n'est pas indexée. 
+
+L'inflation n'est pas le seul changement à prendre en compte et l'augmentation du PIB joue le même rôle. Ainsi, pour maintenir une dette constante relativement au PIB, on tient compte du taux de croissance nominal, ajoutant à l'inflation la croissance en volume de l'activité. Dans une situation d'équilibre entre les recettes et les dépenses hors la charge d'intérêts, la dette s'accroit si le taux d'intérêt souverain est supérieur au taux croissance et décroit dans le cas inverse. Le @fig-dette illustre ces notions. Le paneau (c) est le ratio dette sur PIB pour la France de 1995 à 2025, en trimestriel. 
+
+Le paneau (a) représente l'écart entre le tauix d'intérêt et le taux de croissance, pendant du fameux $r>g$ de Thomas Piketty, l'écart critique, appliqué ici à la dette publique. Il mesure l'intensité de l'effet boule de neige ou de son opposé, qui déprécie la dette par la croissance ou l'inflation. Les périodes en rouge sont celles où l'effet boule de neige pèse sur la dynamique de la dette publique et en vert où il l'allège. Deux notions peuvent être employées suivant qu'on prend le taux souverain courant (le trait plein) ou le taux pondéré sur la dette publique (aussi appelé taux apparent) qui intègre les taux contractés par le passé pour chaque maturité de la dette publique. Cet écart critique a été très favorable à partir de 2012, dès lors que la politique monétaire de la BCE s'est clarifiée et que les taux souverains ont baissé suite aux politiques monétaires non conventionnelles. L'inflation apparue à la fin de 2021, et qui a fortement accéléré après l'invasion de l'Ukraine par la Russie, transitant principalement par la hausse des énergies fossiles (gaz naturel et pétrole), a provoqué une bascule dans la politique monétaire, une hausse des taux directeurs et des taux souverains (voir @fig-spread).
+
+Le paneau (b) synthétise la dynamique de la dette. Le solde stabilisant la dette publique découle de l'écart critique et du niveau de la dette. Il s’accroît significativement avec la hausse des taux souverains après avoiur beaucopup baissé pendant l'épisode inflationniste, où la taxe inflationniste était maximale. 
+
+
+[^3]: Source Agence France Trésor, dette négociable de l'Etat.
+
+```{r}
+#| label: fig-dette
+#| fig-cap: La dette et sa dynamique de 1995 à 2025
+#| fig-asp: 1
+
+dette_trim <- source_data("dette_trim.r")$trim
+
+gec <- ggplot(dette_trim) +
+  aes(x=time) +
+  geom_col(aes(y=ec, fill = ecp), alpha = 0.25, width=1, show.legend = FALSE) +
+  geom_step(aes(y = ec, group=1), direction = "mid", linewidth = 0.25) +
+  geom_step(aes(y = ec_app, group=1), linewidth = 0.5, color = "gray25", linetype ="11") +
+  labs(y="% par an",
+       x = NULL,
+       subtitle= "(a) r - g") +
+  scale_fill_manual(values = c("p" = "red", "n"= "green"))+
+  scale_x_discrete(
+    breaks = str_c(seq(1995, 2025, by=5), "-01-01"),
+    minor_breaks = str_c(seq(1995, 2025, by=1), "-01-01"),
+    labels = seq(1995, 2025, by=5) )+
+  scale_y_continuous(labels = label_percent(1)) +
+  guides(x = guide_axis(minor.ticks = TRUE))+
+  theme(plot.margin = margin(0))
+
+gdm <- ggplot(dette_trim) +
+  aes(x=time) +
+  geom_step(aes(y = dm, group=1), direction = "mid", linewidth = 0.25) +
+  scale_fill_manual(values = c("p" = "red", "n"= "green"))+
+  labs(y="% du PIB",
+       x = NULL,
+       subtitle= "(b) Dette publique (Maastricht)") +
+  scale_x_discrete(
+    breaks = str_c(seq(1995, 2025, by=5), "-01-01"),
+    minor_breaks = str_c(seq(1995, 2025, by=1), "-01-01"),
+    labels = seq(1995, 2025, by=5) )+
+  scale_y_continuous(labels = label_percent(1)) +
+  guides(x = guide_axis(minor.ticks = TRUE))+
+  theme(plot.margin = margin(0))
+
+gssp <- ggplot(dette_trim) +
+  aes(x=time) +
+  geom_step(aes(y = ss, group=1),
+            direction = "mid", linewidth = 0.25, linetype = '11', color = "grey25") +
+  geom_step(aes(y = def_ma, group=1), direction = "mid", linewidth = 0.25) +
+  geom_rect(aes(width = 1, ymin = def_ma, ymax=ss, fill = sppp),
+            linewidth = 0.5,  color = NA, alpha = 0.25, show.legend = FALSE) +
+  scale_fill_manual(values = c("p" = "orange", "n"= "blue"))+
+  labs(y="% du PIB",
+       x = NULL, 
+       subtitle= "(c) Solde et solde stabilisant la dette") +
+  scale_x_discrete(
+    breaks = str_c(seq(1995, 2025, by=5), "-01-01"),
+    minor_breaks = str_c(seq(1995, 2025, by=1), "-01-01"),
+    labels = seq(1995, 2025, by=5) )+
+  scale_y_continuous(labels = label_percent(1)) +
+  guides(x = guide_axis(minor.ticks = TRUE))+
+  theme(plot.margin = margin(0))
+
+gfinal <- gec/gssp/gdm +
+  plot_layout(axes = "collect_x")
+
+gfinal
+```
 
 ## Equilibrer l'épargne nationale
 
