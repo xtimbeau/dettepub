@@ -113,6 +113,7 @@ dette_trim <- "DETTE-TRIM-APU-2020" |>
     dm = maastricht/pib4,
     dn = nette/pib4 ) |>
   arrange(time) |>
+  fill(g4, .direction = "up") |>
   mutate(
     ec_app = rapp-g_fwd,
     ec = r10ans/100-g_fwd,

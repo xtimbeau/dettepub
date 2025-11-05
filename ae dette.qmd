@@ -1,6 +1,8 @@
 ---
 title: "La dette publique est-ce si grave ?"
-format: wp-html
+format:
+  wp-html: default
+  docx: default
 editor: visual
 filters:
   - wordcount
@@ -9,41 +11,14 @@ filters:
 ```{r, include=FALSE}
 ofce::init_qmd()
 library(patchwork)
+library(marquee)
 ```
 
 ::: aside
 {{wordcount}} mots
 :::
 
-## Parle-t-on trop de la dette ?
-
-D'un Etat en faillite de François Fillon (septembre 2007), en passant par par le surendettement de François Bayrou (août 2025), la possibilité d'une intervention du FMI (Amélie de Monchalin, octobre 2025), ou encore de la dette comme instrument de l'esclavage des peuples (2010) jusqu'au dégradation par les agences de notation (11 dégradations depuis la perte du triple A en 2012, la dernière date d'octobre 2025, par S&P), la dette publique est au centre des attentions. Alternatives Economiques n'est pas en reste, adoptant souvent un ton plus pédagogique et moins alarmiste, avec de nombreux articles consacrés à la dette publique, particulièrement en 2025 (8 ou 9), un peu plus qu'en 2024 et beaucoup plus qu'en 2019 ou 2020. L'expression "dette publique", d'après Europresse, une base de données de journaux français[^1], les occurrences de cette expression ont connu un pic en 2012, au plus fort de la crise des dettes souveraines en zone euro (@fig-presse). La période récente n'a pas vu de surproduction d'articles consacrés à la dette publique, Alternatives Economiques étant (relativement) plus actif sur ce sujet en 2025 ou en 2024.
-
-[^1]: 12 publications : Acteurs Publics (site web) ; Aujourd'hui en France ; La Croix ; L'Express ; Le Figaro ; L'Humanité ; Libération ; Le Monde Campus ; Le Monde ; Le Point ; Le Spectacle du Monde ; Valeurs Actuelles.
-
-```{r}
-#| label: fig-presse
-#| fig-cap: Occurences dans la presse nationale française du terme "dette publique"
-#| fig-asp: 0.6
-
-data <- readxl::read_xlsx("altereconomie.xlsx", sheet = "europresse") |> 
-  mutate(
-    time = ymd(Année, truncated = 2) )
-
-ggplot(data) +
-  aes(x=time, y = `dette publique`)+
-  geom_line()+
-  labs(y = "Occurences par an") +
-  scale_ofce_date(date_break = "2 year", expand = expansion(mult = c(0.05, 0.05)))+
-  ofce_caption(
-    source = "Europresse", ofce =FALSE  )
-```
-
-Pourtant, il y a bien une inquiétude particulière à partir de 2024. Pour preuve le graphe @fig-spread indique la chronique des taux souverains pour trois pays de la zone euro depuis 2007. L'écart entre le taux français ou le taux italien et le taux de référence allemand est pertinent. Les dettes publiques en zone euro ne sont pas soumises à un risque de change, sont protégées par le même appareil légal et mesurent assez directement une très faible mais non nulle probabilité d'un défaut souverain.
-
-Ce défaut qui pourrait être total, ou plus probablement partiel, avec ou sans sortie de la zone euro, repose sur le précédent grec au moment de la crise des dettes souveraines (2009-2012). Après cette crise, la Banque Centrale Européenne, mais aussi les Etats membres, ont affirmé leur engagement dans l'euro. La Banque Centrale, appuyée par les Banques Centrales Nationales, membres de l'Eurosystème, s'est doté d'instruments pour intervenir sur les marchés de dette publique européenne, portant la part de la dette détenue par les banques centrales – et donc neutralisée – à plus de 20%. Le Mécanisme de Stabilité Européenne (MES) dote l'Eurogroupe d'un important matelas pour intervenir, au delà des banques centrales, et ce matelas peut être accru si nécessaire par une décision des parlements nationaux. Cet épisode et les politiques, les doctrines et les instruments qui ont été inventés ou renforcés a renforcé la Zone euro et repousse le spectre d'un défaut d'un Etat membre. Ceux-ci sont maintenant largement à l'abri de la pression des marchés, ou du moins le sont collectivement, appuyés par une Banque Centrale puissante à même de désamorcer très rapidement toute spéculation.
-
-Mais, la réduction unilatérale de la dette publique grecque imposée aux créanciers privés reste une possibilité pour une crise de dette souveraine future. Si un pays venait à ne pas pouvoir contrôler sa dette, l'intervention des Etats membres et de la BCE – probablement sans l'appui du FMI – pourrait inclure une telle dépréciation. Un autre scénario qui n'est pas à exclure complètement est celui d'une sortie volontaire de la zone Euro d'un Etat membre. En effet, en cas de conflit profond avec les autorités européennes, ce qui est surtout une menace dans une négociation dure, pourrait se concrétiser dans un scénario d'escalade. Ces éventualités sont peu probables, mais elles expliquent les hausses modérées des écarts de taux. Le @fig-spread illustre la hausse de l'écart de taux entre la France et l'Allemagne en le remettant dans le contexte historique. L'écart qui s'est installé après la dissolution de l'Assemblée Nationale française en juin 2025 (0,8% en octobre 2025) est plus élevé qu'avant la crise financière de 2008 mais plus bas qu'au pic atteint en novembre 2011 (1,43%). Comme l'illustre le @fig-spread, ce sont bien les évènements politiques marqués d'un triangle rouge foncé qui "font" l'écart de taux plus que les dégradations des agences de notations (triangle vert foncé).
+La dette publique française est à un niveau record depuis la seconde guerre mondiale. Doit-on s'en inquieter ? Quelle est logique à laquelle nous sommes confrontés ? En analysant la dynamique de la dette, on peut comprendre l'importance de l'écart en le taux souverain et la croissance de l'économie et conclure que, si le niveau de la dette publique n'est pas un problème, il n'est pas possible de maintenir des déficits publics aussi creusés qu'en 2025 bien longtemps.
 
 ```{r}
 #| label: fig-spread
@@ -153,20 +128,19 @@ gtaux/gspread+
 
 ## La dynamique contre intuitive de la dette
 
-Le débat sur la dette publique est parfois confus, la confusion découlant de l'analogie que chacun fait quand il s'agit de la dette avec sa situation personnelle ou celle d'une entité comme une entreprise. La logique de la dette d'un agent économique qui n'est pas à l'échelle macro économique est assez simple : c'est le résultat de l'accumulation de déficit ou de surplus, différence entre les recettes et les dépenses. Déficit, ressources, dépenses sont indépendants et n'interagissent que faiblement. La durée de vie de l'agent est finie et donc sa dette doit un jour ou l'autre être liquidée. La dette publique est celle d'un Etat, dont les recettes et les dépenses interagissent fortement et dont la durée de vie est infinie – ou du moins la question de sa liquidation ne se pose pas. Ainsi, la dette publique française a été continuement respectée à travers les siècles, y compris au passage de la révolution française de 1789 – la dette royale est devenu la dette de la République – avec quelques défauts partiels explicites, le dernier datant de 1797 (banqueroute des deux tiers)[^2]. Passer de l'analyse parfois qualifiée, avec un brin de mépris, de "ménagère", à l'approche macroéconomique bouscule les préconceptions que l'on peut avoir.
+Le débat sur la dette publique est parfois confus, la confusion découlant de l'analogie que chacun fait quand il s'agit de la dette avec sa situation personnelle ou celle d'une entité comme une entreprise. La logique de la dette d'un agent économique qui n'est pas à l'échelle macro économique est assez simple : c'est le résultat de l'accumulation de déficit ou de surplus, différence entre les recettes et les dépenses. Déficit, ressources, dépenses sont indépendants et n'interagissent que faiblement. La durée de vie de l'agent est finie et donc sa dette doit un jour ou l'autre être liquidée. La dette publique est celle d'un Etat, dont les recettes et les dépenses interagissent fortement et dont la durée de vie est infinie – ou du moins la question de sa liquidation ne se pose pas. Ainsi, la dette publique française a été continuement respectée à travers les siècles, y compris au passage de la révolution française de 1789 – la dette royale est devenu la dette de la République – avec quelques défauts partiels explicites, le dernier datant de 1797 (banqueroute des deux tiers)[^1]. La complexité de la macroéconomie découle de ce premeir élément, auquel il est nécessaire d'ajouter que les intérêts de la dette sont perçus par des agents économiques, que les titres de dette servent de référence (actifs sans risque) aux marchés financiers et que l'économie dans son ensemble a besoin de tels titres pour fonctionner. Pour ces deux raisons l'argent injecté par les intérêts n'est pas perdu dans l'économie, d'autant moins que celle ci est fermée. En économie ouverte, ou également quand on s’intéresse aux question de redistribution, le circuit de la dette peut avoir des conséquences sur l'équilibre de la balance courante ou les transferts entre créanciers de l’État et contribuables. Mais l'analyse de ces deux aspects va dépendre d'une variable clef, l'écart critique, dont on va voir l'importance. Passer de l'analyse parfois qualifiée, avec un brin de mépris, de "ménagère", à l'approche macroéconomique bouscule les préconceptions que l'on peut avoir.
 
-[^2]: On peut assimiler une dévaluation à un défaut partiel sur la dette publique, mais uniquement pour les agents non résidents. L'inflation érode également la valeur de la dette publique et peut être considérée comme un défaut bien qu'aucun de ces deux évènements ne constitue un évènement de crédit en soi.
+[^1]: On peut assimiler une dévaluation à un défaut partiel sur la dette publique, mais uniquement pour les agents non résidents. L'inflation érode également la valeur de la dette publique et peut être considérée comme un défaut bien qu'aucun de ces deux évènements ne constitue un évènement de crédit en soi.
 
-Parce que la dette publique persiste sur une longue période, il est impératif de prendre en compte la dynamique de la référence. La première est celle des prix ou l'inflation. Chaque année, l'inflation modifie la mesure en euro. Une inflation positive signifie qu'un euro vaut chaque année un peu moins. Pour la dette publique, cela implique que l'endettement d'hier doit être réduit de l'inflation, c'est la taxe inflationniste. Cette taxe bénéficie à tout emprunteur dès que le contrat qui le lie à son créancier est écrit en termes nominaux – et avec un taux non indexé. Un contre exemple de dette sur laquelle ne s'applique pas la taxe inflationniste est le contrat d'OATi, les Obligations Assimilables du Trésor indexés. Puisque la valeur finalement remboursée est augmentée de l'inflation, la taxe inflationniste ne s'y applique pas. Les OATi représentent aujourd'hui 10% de l'encours de dette[^3]. Pour conserver une dette de poids constant, il faut donc prendre en compte l'effet de cette taxe inflationniste – sur les 90% de la dette publique française qui n'est pas indexée. 
+Parce que la dette publique persiste sur une longue période, il est impératif de prendre en compte la dynamique de la référence. La première est celle des prix ou l'inflation. Chaque année, l'inflation modifie la mesure en euro. Une inflation positive signifie qu'un euro vaut chaque année un peu moins. Pour la dette publique, cela implique que l'endettement d'hier doit être réduit de l'inflation, c'est la taxe inflationniste. Cette taxe bénéficie à tout emprunteur dès que le contrat qui le lie à son créancier est écrit en termes nominaux – et avec un taux non indexé. Un contre exemple de dette sur laquelle ne s'applique pas la taxe inflationniste est le contrat d'OATi, les Obligations Assimilables du Trésor indexés. Puisque la valeur finalement remboursée est augmentée de l'inflation, la taxe inflationniste ne s'y applique pas. Les OATi représentent aujourd'hui 10% de l'encours de dette[^2]. Pour conserver une dette de poids constant, il faut donc prendre en compte l'effet de cette taxe inflationniste – sur les 90% de la dette publique française qui n'est pas indexée.
 
-L'inflation n'est pas le seul changement à prendre en compte et l'augmentation du PIB joue le même rôle. Ainsi, pour maintenir une dette constante relativement au PIB, on tient compte du taux de croissance nominal, ajoutant à l'inflation la croissance en volume de l'activité. Dans une situation d'équilibre entre les recettes et les dépenses hors la charge d'intérêts, la dette s'accroit si le taux d'intérêt souverain est supérieur au taux croissance et décroit dans le cas inverse. Le @fig-dette illustre ces notions. Le paneau (c) est le ratio dette sur PIB pour la France de 1995 à 2025, en trimestriel. 
+[^2]: Source Agence France Trésor, dette négociable de l'Etat.
 
-Le paneau (a) représente l'écart entre le tauix d'intérêt et le taux de croissance, pendant du fameux $r>g$ de Thomas Piketty, l'écart critique, appliqué ici à la dette publique. Il mesure l'intensité de l'effet boule de neige ou de son opposé, qui déprécie la dette par la croissance ou l'inflation. Les périodes en rouge sont celles où l'effet boule de neige pèse sur la dynamique de la dette publique et en vert où il l'allège. Deux notions peuvent être employées suivant qu'on prend le taux souverain courant (le trait plein) ou le taux pondéré sur la dette publique (aussi appelé taux apparent) qui intègre les taux contractés par le passé pour chaque maturité de la dette publique. Cet écart critique a été très favorable à partir de 2012, dès lors que la politique monétaire de la BCE s'est clarifiée et que les taux souverains ont baissé suite aux politiques monétaires non conventionnelles. L'inflation apparue à la fin de 2021, et qui a fortement accéléré après l'invasion de l'Ukraine par la Russie, transitant principalement par la hausse des énergies fossiles (gaz naturel et pétrole), a provoqué une bascule dans la politique monétaire, une hausse des taux directeurs et des taux souverains (voir @fig-spread).
+L'inflation n'est pas le seul changement à prendre en compte et l'augmentation du PIB joue le même rôle. Ainsi, pour maintenir une dette constante relativement au PIB, on tient compte du taux de croissance nominal, ajoutant à l'inflation la croissance en volume de l'activité. Dans une situation d'équilibre entre les recettes et les dépenses hors la charge d'intérêts, la dette s’accroît si le taux d'intérêt souverain est supérieur au taux croissance et décroit dans le cas inverse. Le @fig-dette illustre ces notions. Le panneau (c) est le ratio dette sur PIB pour la France de 1995 à 2025, en trimestriel.
 
-Le paneau (b) synthétise la dynamique de la dette. Le solde stabilisant la dette publique découle de l'écart critique et du niveau de la dette. Il s’accroît significativement avec la hausse des taux souverains après avoiur beaucopup baissé pendant l'épisode inflationniste, où la taxe inflationniste était maximale. 
+Le panneau (a) représente l'écart entre le taux d'intérêt et le taux de croissance, pendant du fameux $r>g$ de Thomas Piketty, l'écart critique, appliqué ici à la dette publique. Il mesure l'intensité de l'effet boule de neige ou de son opposé, qui déprécie la dette par la croissance ou l'inflation. Les périodes en rouge sont celles où l'effet boule de neige pèse sur la dynamique de la dette publique et en vert où il l'allège. Deux notions peuvent être employées suivant qu'on prend le taux souverain courant (le trait plein) ou le taux pondéré sur la dette publique (aussi appelé taux apparent) qui intègre les taux contractés par le passé pour chaque maturité de la dette publique. Cet écart critique a été très favorable à partir de 2012, dès lors que la politique monétaire de la BCE s'est clarifiée et que les taux souverains ont baissé suite aux politiques monétaires non conventionnelles. L'inflation apparue à la fin de 2021, et qui a fortement accéléré après l'invasion de l'Ukraine par la Russie, transitant principalement par la hausse des énergies fossiles (gaz naturel et pétrole), a provoqué une bascule dans la politique monétaire, une hausse des taux directeurs et des taux souverains (voir @fig-spread).
 
-
-[^3]: Source Agence France Trésor, dette négociable de l'Etat.
+Le panneau (b) synthétise la dynamique de la dette. Le solde stabilisant la dette publique découle de l'écart critique et du niveau de la dette. Il s’accroît significativement avec la hausse des taux souverains après avoir beaucoup baissé pendant l'épisode inflationniste, où la taxe inflationniste était maximale en 2022 qui fait suite à la période de crise sanitaire où au contraire le confinement a induit une diminution du PIB et donc un effet croissance négatif. L'ordre de grandeur de ces deux cas polaires est important puisque le solde public stabilisant la dette est passé de +5,8% du PIB à la fin de 2020 (un excédent) à -9% du PIB au début de 2022. Ce sont des circonstances exceptionnelles avec de grandes variations des taux de croissance et d'inflation. La comparaison entre l'année 2019 et l'année 2025 est plus pertinente : l'effet combiné d'une croissance plus faible et de taux souverains plus élevés demande un solde supérieur de 0,5% du PIB pour stabiliser la dette. C'est significatif (c'est environ 15 milliards d'euros) mais très inférieur à l'autre élément qui explique la dynamique de la dette. Cet élément c'est le déficit public effectif, résultat à la fois de l'effet de la conjoncture sur les recettes fiscales -- de façon plus générale des stabilisateurs automatiques -- et des décisions de politique économique.
 
 ```{r}
 #| label: fig-dette
@@ -174,7 +148,10 @@ Le paneau (b) synthétise la dynamique de la dette. Le solde stabilisant la dett
 #| fig-asp: 1
 
 dette_trim <- source_data("dette_trim.r")$trim
-
+txt <- tribble(
+  ~x, ~y, ~text, ~hjust, ~width,
+  "2024-01-01", -0.02, "avec le taux souverain pondéré", 0, 1,
+  "2016-01-01", -0.035, "avec le taux souverain courant", 1, 2 )
 gec <- ggplot(dette_trim) +
   aes(x=time) +
   geom_col(aes(y=ec, fill = ecp), alpha = 0.25, width=1, show.legend = FALSE) +
@@ -182,15 +159,19 @@ gec <- ggplot(dette_trim) +
   geom_step(aes(y = ec_app, group=1), linewidth = 0.5, color = "gray25", linetype ="11") +
   labs(y="% par an",
        x = NULL,
-       subtitle= "(a) r - g") +
+       subtitle= "(a) r - g (écart critique)") +
   scale_fill_manual(values = c("p" = "red", "n"= "green"))+
   scale_x_discrete(
     breaks = str_c(seq(1995, 2025, by=5), "-01-01"),
     minor_breaks = str_c(seq(1995, 2025, by=1), "-01-01"),
     labels = seq(1995, 2025, by=5) )+
   scale_y_continuous(labels = label_percent(1)) +
-  guides(x = guide_axis(minor.ticks = TRUE))+
-  theme(plot.margin = margin(0))
+  geom_marquee(
+    data=txt, 
+    aes(x, y, hjust =hjust, label = text),
+    width = unit(2, "cm"),
+    size = 7, size.unit = "pt") + 
+  guides(x = guide_axis(minor.ticks = TRUE))
 
 gdm <- ggplot(dette_trim) +
   aes(x=time) +
@@ -198,40 +179,67 @@ gdm <- ggplot(dette_trim) +
   scale_fill_manual(values = c("p" = "red", "n"= "green"))+
   labs(y="% du PIB",
        x = NULL,
-       subtitle= "(b) Dette publique (Maastricht)") +
+       subtitle= "(c) Dette publique (Maastricht)") +
   scale_x_discrete(
     breaks = str_c(seq(1995, 2025, by=5), "-01-01"),
     minor_breaks = str_c(seq(1995, 2025, by=1), "-01-01"),
     labels = seq(1995, 2025, by=5) )+
   scale_y_continuous(labels = label_percent(1)) +
-  guides(x = guide_axis(minor.ticks = TRUE))+
-  theme(plot.margin = margin(0))
+  guides(x = guide_axis(minor.ticks = TRUE))
+
+txt <- tribble(
+  ~x, ~y, ~text, ~hjust, ~width,
+  "2009-01-01", -0.08, "Solde public effectif", 0, 1,
+  "2010-04-01", 0.01, "Solde stabilisant la dette publique", 0, 2 )
 
 gssp <- ggplot(dette_trim) +
   aes(x=time) +
+  geom_hline(yintercept = 0, linewidth = 0.25, color = "grey25")+
   geom_step(aes(y = ss, group=1),
             direction = "mid", linewidth = 0.25, linetype = '11', color = "grey25") +
   geom_step(aes(y = def_ma, group=1), direction = "mid", linewidth = 0.25) +
   geom_rect(aes(width = 1, ymin = def_ma, ymax=ss, fill = sppp),
             linewidth = 0.5,  color = NA, alpha = 0.25, show.legend = FALSE) +
-  scale_fill_manual(values = c("p" = "orange", "n"= "blue"))+
+  scale_fill_manual(values = c("p" = "red", "n"= "green"))+
+  geom_marquee(
+    data=txt, 
+    aes(x, y, hjust =hjust, label = text),
+    width = unit(2, "cm"),
+    size = 7, size.unit = "pt") + 
   labs(y="% du PIB",
        x = NULL, 
-       subtitle= "(c) Solde et solde stabilisant la dette") +
+       subtitle= "(b) Solde et solde stabilisant la dette") +
   scale_x_discrete(
     breaks = str_c(seq(1995, 2025, by=5), "-01-01"),
     minor_breaks = str_c(seq(1995, 2025, by=1), "-01-01"),
     labels = seq(1995, 2025, by=5) )+
   scale_y_continuous(labels = label_percent(1)) +
-  guides(x = guide_axis(minor.ticks = TRUE))+
-  theme(plot.margin = margin(0))
+  guides(x = guide_axis(minor.ticks = TRUE))
 
-gfinal <- gec/gssp/gdm +
+gfinal <- gec/gssp/gdm &
+  theme(plot.margin = margin(0),
+        plot.subtitle = element_marquee(size=rel(0.75))) +
   plot_layout(axes = "collect_x")
 
 gfinal
 ```
 
-## Equilibrer l'épargne nationale
+Ce solde effectif est indiqué sur le panneau (c) par un trait plein et l'écart entre le solde effectif et le solde stabilisant est l'augmentation de la dette (coloré en vert lorsque la dette en point de PIB décroît et en rouge lorsqu'elle augmente). La période de crise sanitaire a conjugué une forte augmentation du solde qui stabilise la dette publique et une forte diminution du solde effectif, sous l'effet du confinement et des mesures massives de soutien. La hausse de la dette à cette occasion a été de 20 points de PIB. Le fort effet de la taxe inflationniste a ensuite modéré le ratio dette sur PIB, imposant aux détenteurs de dette une perte en capital au bénéfice de l’État. A la fin de l'épisode d'inflation, le solde stabilisant la dette revient vers des valeurs habituelles (supérieur d'un demi point à celui de 2019 comme on l'a vu plus haut). Mais le solde effectif ne s'est pas résorbé, suite à des prévisions de recettes erronées en 2023 et 2024 et la dissolution de l'Assemblée Nationale en juin 2024 qui a paralysé le processus budgétaire.
 
-## Quelles règles de politique budgétaire ?
+Il existe de nombreuses analyses de la raison de ce dérapage (soit en mettant l'accent sur les deux années 2023 et 2024 de dérapage, soit en remontant aux sources de la politique de l'offre d'Emmanuel Macron et en soulignant l'absence de financement ou d'un effet suffisament positif sur l'activité, entres autres) et de la différence de trajectoires entre la France et les autres pays de la zone Euro, soumis peu ou prou aux mêmes chocs. Sans entrer dans le détail, c'est là que se joue l'évolution récente de la dette publique française.
+
+## Est ce que la dette c'est grave ?
+
+La dynamique particulière de la dette publique se résume assez simplement : tant que l'écart critique reste proche de 0, c'est-à-dire si la croissance nominale (('y compris l'inflation) et le taux souverain sont égaux, alors le niveau de la dette importe peu. On paye d'un côté la charge d'intérêt on bénéficie de l'autre de la hausse du PIB ou de l'inflation. La charge d'intérêt nette de cet effet est alors nulle et surtout insensible au niveau de dette publique. Si cet écart critique devient favorable – comme il l'a été de 2012 à 2023 voir @fig-dette (b), l'endettement public est même positif, ce que l'on appelle parfois une répression financière puisqu'elle se fait au détriment des détenteurs de dette publique (qu'ils soient des épargnants résidents, plutôt riches, ce qui redistribue alors des épargannts vers les contribuables ou créanciers étrangers, auxquels cas la répression financière oblige l'extérieur à transferer vers le pays) et s'apparente à un privilège souverain.
+
+Si au contraire l'écart critique devient désavantageux – ça a été la norme de 1995 à 2012, alors la contrainte pour stabiliser la dette se durcit. Durant cette même période, les seules phase de réduction de la dette coïncident pratiquement avec une réduction de l'écart critique (@fig-dette (a)). Les inégalités tendent à augmenter et le transfert se fait vers les créanciers extérieurs. Bien que ce ne soit pas l'objet de cet article, l'Allemagne bénéficie depuis longtemps d'un écart critique très favorable, alors que l'Italie payait un lourd tribu par ce canal, jusqu'à peu (voir [Heyer *et al*, *Policy Brief de l'OFCE n°146*, "Quelles trajectoires pour les finances publiques de la France ?"](https://www.ofce.sciences-po.fr/pdf/pbrief/2025/OFCEpbrief146.pdf)).
+
+Le niveau de la dette intervient par ce canal, en tant que déterminant potentiel de l'écart critique. Il n'existe pas de niveau limite pour l'endettement, mais tout ce qui alimente la crainte d'une fuite en avant – défaut partiel, freins à la circulation des capitaux, perte du soutien des autres Etats membres de la zone euro, de la BCE, risque de sortie de la zone euro – induit une hausse de l'écart critique dans la zone désavantageuse. Les conséquences en sont d'autant plus imortantes que le niveau de la dette est important. A l'opposé, plus le consensus que la situation est soutenable est établi, plus l'écart critique est faible voire avantageux. Ce consensus est formé par un mélange d'opinions, pas toujours fondées, de règles, pas toujours robustes, de pratiques, pas toujours explicitées, mais il est détermine si la dette publique est un poids ou non.
+
+L'analyse de la dette publique ne doit pas masquer le point important. Comme l'indique l'histoire récente retracée par le @fig-dette (b), c'est le solde effectif qui "fait" beaucoup de la dynamique de la dette publique. Si le niveau auquell elle est stabilisée importe peu, le fait qu'elle soit stable, en particulier qu'elle n'augmente pas sans bonnes raisons. Ramener le déficit public vers le solde stabilisant la dette est un objectif incontournable. Aujourd'hui cela veut dire un effort très important pour la France : de l'ordre de 2,8 points de PIB, soit plus de 80 milliards d'euros[^3].
+
+[^3]: Le CAE évalue l'effort à un peu plus de 110 milliards d'euros,
+
+Le débat budgétaire de la fin de l'année 2025 montre de plus que l'approche ne pas être seulement comptable : l'effort nécessaire est tellement massif qu'il est impossible à réaliser sans prendre en compte les questions d'équité, ni oublier les effets négatifs que cet effort aura sur l'allocation des ressources et la conduite des politiques publiques, au delà des effets récessifs inévitables à court terme. La marche est donc vertigineuse et tout gain, même petit, du côté de l'écart critique (la crédibilité politique) ou de l'activité économique (préserver le potentiel de croissance) ne peut être négligé.
+
+En résumé, le niveau de la dette publique importe peu. Bien comprise la dynamique de la dette publique nous montre qu'elle n'étouffe pas une économie tant que l'écart critique reste favorable. Mais en revanche, faillir à rétablir les comptes publics aura des conséquences d'autant plus graves que la dette est aujourd'hui à un niveau élevé. {{< fa square >}}
