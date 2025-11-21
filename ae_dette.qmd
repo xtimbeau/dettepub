@@ -79,8 +79,10 @@ gtaux <- ggplot(data_graph) +
     fill=NULL)+
   ofce::scale_color_pays("eurostat") +
   ofce::scale_ofce_date(
-    date_breaks = "2 year",
-    date_minor_breaks = "1 month") +
+    date_breaks = "1 year",
+    date_minor_breaks = "1 month",
+    labels = ofce::date1,
+    expand = expansion(c(0.03, 0.01))) +
    guides(
      fill = marquee::guide_marquee(
      "!!1, !!2, !!3")) 
@@ -89,8 +91,8 @@ gspread <-  ggplot(data_graph |> filter(geo != "DE")) +
   geom_segment(
     data = deg, 
     aes( x = date, xend = date, y=0, yend =spread, group=NULL, color = type),
-    linewidth=0.5, linetype="11", show.legend = FALSE) +
-  geom_point(data = deg,aes(x=date, y=0.075, color = type), shape = 17, size = 1, show.legend = FALSE) +
+    linewidth=0.1, show.legend = FALSE) +
+  geom_point(data = deg, aes(x=date, y=0.075, color = type), shape = 17, size = 1, show.legend = FALSE) +
   scale_color_manual(values = c("p" = "firebrick", "r"="seagreen")) + 
   ggnewscale::new_scale_color() +
   geom_hline(yintercept = 0, linewidth=0.25) +
@@ -108,8 +110,10 @@ gspread <-  ggplot(data_graph |> filter(geo != "DE")) +
        fill=NULL)+
   ofce::scale_color_pays("eurostat") +
   ofce::scale_ofce_date(
-    date_breaks = "2 year",
-    date_minor_breaks = "1 month") +
+    date_breaks = "1 year",
+    date_minor_breaks = "1 month",
+    labels = ofce::date1,
+    expand = expansion(c(0.03, 0.01))) +
   guides(
     color = "none",
     linetype = "none",
@@ -117,13 +121,16 @@ gspread <-  ggplot(data_graph |> filter(geo != "DE")) +
     fill = marquee::guide_marquee(
       "!!1, !!2")) 
 
-gtaux/gspread+
+gg <- gtaux/gspread+
   plot_layout(axes = "collect", heights = c(16, 8)) +
   ofce_caption(
     source="investing.com",
     note = "Les évènements dégradation sont indiqués par {.seagreen des triangles vert} et les évènements politiques (dissolution, défiance, démission de Lecornu) sont indiqués par des {.firebrick triangles rouge}. Données téléchargées le {date_jour(tsh$date)}",
     dpt = data_graph$date, dptf = "day")
 
+ggplot2::ggsave(file = "spreads.svg", plot = gg, device="svg", width = 6, height = 0.8*6)  
+
+gg
 ```
 
 ## La dynamique contre intuitive de la dette
@@ -147,30 +154,30 @@ Le panneau (b) synthétise la dynamique de la dette. Le solde stabilisant la det
 #| fig-cap: La dette et sa dynamique de 1995 à 2025
 #| fig-asp: 1
 
-dette_trim <- source_data("dette_trim.r")$trim
+dette_trim <- source_data("dette_trim.r")$trim |> 
+  mutate(time = as.Date(time)) |> 
+  filter(time >= "2007-01-01") |> 
+  mutate(time = factor(time))
 txt <- tribble(
   ~x, ~y, ~text, ~hjust, ~width,
   "2024-01-01", -0.02, "avec le taux souverain pondéré", 0, 1,
   "2016-01-01", -0.035, "avec le taux souverain courant", 1, 2 )
+sx <- scale_x_discrete(
+    breaks = str_c(seq(2007, 2025, by=1), "-01-01"),
+    minor_breaks = str_c(seq(2007, 2025, by=1), "-01-01"),
+    labels = c( "2007", str_c("0", 8:9), 10:25),
+    expand = expansion(0.03, 0.03))
+
 gec <- ggplot(dette_trim) +
   aes(x=time) +
   geom_col(aes(y=ec, fill = ecp), alpha = 0.25, width=1, show.legend = FALSE) +
   geom_step(aes(y = ec, group=1), direction = "mid", linewidth = 0.25) +
-  geom_step(aes(y = ec_app, group=1), linewidth = 0.5, color = "gray25", linetype ="11") +
   labs(y="% par an",
        x = NULL,
        subtitle= "(a) r - g (écart critique)") +
   scale_fill_manual(values = c("p" = "red", "n"= "green"))+
-  scale_x_discrete(
-    breaks = str_c(seq(1995, 2025, by=5), "-01-01"),
-    minor_breaks = str_c(seq(1995, 2025, by=1), "-01-01"),
-    labels = seq(1995, 2025, by=5) )+
+  sx+
   scale_y_continuous(labels = label_percent(1)) +
-  geom_marquee(
-    data=txt, 
-    aes(x, y, hjust =hjust, label = text),
-    width = unit(2, "cm"),
-    size = 7, size.unit = "pt") + 
   guides(x = guide_axis(minor.ticks = TRUE))
 
 gdm <- ggplot(dette_trim) +
@@ -180,10 +187,7 @@ gdm <- ggplot(dette_trim) +
   labs(y="% du PIB",
        x = NULL,
        subtitle= "(c) Dette publique (Maastricht)") +
-  scale_x_discrete(
-    breaks = str_c(seq(1995, 2025, by=5), "-01-01"),
-    minor_breaks = str_c(seq(1995, 2025, by=1), "-01-01"),
-    labels = seq(1995, 2025, by=5) )+
+  sx +
   scale_y_continuous(labels = label_percent(1)) +
   guides(x = guide_axis(minor.ticks = TRUE))
 
@@ -209,18 +213,17 @@ gssp <- ggplot(dette_trim) +
   labs(y="% du PIB",
        x = NULL, 
        subtitle= "(b) Solde et solde stabilisant la dette") +
-  scale_x_discrete(
-    breaks = str_c(seq(1995, 2025, by=5), "-01-01"),
-    minor_breaks = str_c(seq(1995, 2025, by=1), "-01-01"),
-    labels = seq(1995, 2025, by=5) )+
+  sx +
   scale_y_continuous(labels = label_percent(1)) +
   guides(x = guide_axis(minor.ticks = TRUE))
 
-gfinal <- gec/gssp/gdm &
+gfinal <- gec/gssp/gdm  +
+  plot_layout(axes = "collect_x") &
   theme(plot.margin = margin(0),
-        plot.subtitle = element_marquee(size=rel(0.75))) +
-  plot_layout(axes = "collect_x")
+        axis.text.x = element_text(size = rel(0.75), hjust = 0),
+        plot.subtitle = element_marquee(size=rel(0.75)))
 
+ggsave("dette.svg", plot = gfinal, device = "svg", width = 6, height=6 )
 gfinal
 ```
 
