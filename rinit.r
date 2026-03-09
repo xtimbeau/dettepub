@@ -49,7 +49,7 @@ rm(load,not_installed_CRAN,rinit_packages)
 
 ####
 options(
-  ofce.base_size = 12,
+  ofce.base_size = 11,
   ofce.background_color = "transparent",
   ofce.source_data.src_in = "project",
   ofce.caption.ofce = FALSE,
