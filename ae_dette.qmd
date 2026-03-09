@@ -29,7 +29,7 @@ tsh <- source_data("souverains/taux_souverains_historiques.R", metadata = TRUE)
 
 data_graph <- tsh |> 
   pluck("data") |> 
-  filter(date >= "2007-01-01") |> 
+  filter(date >= "2020-01-01") |> 
   mutate( date  = if_else(date <= now(), floor_date(date, unit = "month") + days(15), date)) |>
   mutate(
     geo = case_match(pays,
@@ -89,10 +89,11 @@ gtaux <- ggplot(data_graph) +
 
 gspread <-  ggplot(data_graph |> filter(geo != "DE")) +
   geom_segment(
-    data = deg, 
+    data = deg |> filter(date>= "2020-01-01"), 
     aes( x = date, xend = date, y=0, yend =spread, group=NULL, color = type),
     linewidth=0.1, show.legend = FALSE) +
-  geom_point(data = deg, aes(x=date, y=0.075, color = type), shape = 17, size = 1, show.legend = FALSE) +
+  geom_point(data = deg |> filter(date>= "2020-01-01"),
+             aes(x=date, y=0.075, color = type), shape = 17, size = 1, show.legend = FALSE) +
   scale_color_manual(values = c("p" = "firebrick", "r"="seagreen")) + 
   ggnewscale::new_scale_color() +
   geom_hline(yintercept = 0, linewidth=0.25) +
