@@ -3,7 +3,7 @@ library(rvest)
 library(vroom)
 
 if(file.exists("taux_souverains_historiques.csv"))
-  tsh <- vroom::vroom("taux_souverains_historiques.csv") else {
+  tsh <- vroom::vroom(ofce::pathify("/souverains/taux_souverains_historiques.csv")) else {
     ff <- list.files(pattern = "france.*\\.csv")
     france <- map_dfr(ff, ~vroom(.x, locale = vroom::locale(decimal_mark=",")) %>%
                          transmute(date = dmy(Date),
@@ -54,6 +54,6 @@ tsh <- tsh %>%
   bind_rows(taux_souverains_historiques_MAJ) %>%
   unique()
 
-vroom::vroom_write(tsh, file = "taux_souverains_historiques.csv")
+vroom::vroom_write(tsh, file = ofce::pathify("/souverains/taux_souverains_historiques.csv"))
 
 return(tsh)

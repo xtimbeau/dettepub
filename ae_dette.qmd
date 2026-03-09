@@ -25,7 +25,17 @@ La dette publique française est à un niveau record depuis la seconde guerre mo
 #| fig-cap: Taux souverains et écarts de taux
 #| fig-asp: 0.8
 tsh <- source_data("souverains/taux_souverains_historiques.R", metadata = TRUE)
-
+ant <- tribble(
+  ~time, ~y , ~geo, ~label, ~hjust,
+  "2011-09-01", 6, "IT", "Italie", 1,
+  "2012-08-01", 3, "FR", "France", 0,
+  "2012-01-01", 1.1, "DE", "Allemagne", 0.5 ) |> 
+  mutate(date = ymd(time))
+ants <- tribble(
+  ~time, ~y , ~geo, ~label, ~hjust,
+  "2011-06-01", 3, "IT", "Italie vs Allemagne", 1,
+  "2018-06-01", 0.75, "FR", "France vs Allemagne", 0 ) |> 
+  mutate(date = ymd(time))
 
 data_graph <- tsh |> 
   pluck("data") |> 
@@ -74,18 +84,18 @@ deg <- tribble(
 gtaux <- ggplot(data_graph) +
   aes(x=date, y=taux, color=geo, group=geo) +
   geom_line(linewidth = 0.5, show.legend = FALSE) +
+  geom_marquee(
+    data = ant,  
+    size = 8, size.unit = "pt",
+    aes(label = label, hjust = hjust, y = y), show.legend = FALSE) +
   labs(y="taux, en % par an",
-    x = NULL,
-    fill=NULL)+
-  ofce::scale_color_pays("eurostat") +
+    x = NULL)+
+  ofce::scale_color_pays("eurostat", name = "!!1, !!2, !!3", guide = "marquee") +
   ofce::scale_ofce_date(
     date_breaks = "1 year",
     date_minor_breaks = "1 month",
     labels = ofce::date1,
-    expand = expansion(c(0.03, 0.01))) +
-   guides(
-     fill = marquee::guide_marquee(
-     "!!1, !!2, !!3")) 
+    expand = expansion(c(0.03, 0.03))) 
 
 gspread <-  ggplot(data_graph |> filter(geo != "DE")) +
   geom_segment(
@@ -95,6 +105,10 @@ gspread <-  ggplot(data_graph |> filter(geo != "DE")) +
   geom_point(data = deg, aes(x=date, y=0.075, color = type), shape = 17, size = 1, show.legend = FALSE) +
   scale_color_manual(values = c("p" = "firebrick", "r"="seagreen")) + 
   ggnewscale::new_scale_color() +
+  geom_marquee(
+    data = ants, 
+    size = 8, size.unit = "pt",
+    aes(x = date, label = label, hjust = hjust, y = y, color = geo), show.legend = FALSE) +
   geom_hline(yintercept = 0, linewidth=0.25) +
   geom_line(aes(x=date, y=spread, color=geo, group=geo), linewidth = 0.5, show.legend = FALSE) +
   geom_smooth(
@@ -113,13 +127,7 @@ gspread <-  ggplot(data_graph |> filter(geo != "DE")) +
     date_breaks = "1 year",
     date_minor_breaks = "1 month",
     labels = ofce::date1,
-    expand = expansion(c(0.03, 0.01))) +
-  guides(
-    color = "none",
-    linetype = "none",
-    linewidth = "none",
-    fill = marquee::guide_marquee(
-      "!!1, !!2")) 
+    expand = expansion(c(0.03, 0.01))) 
 
 gg <- gtaux/gspread+
   plot_layout(axes = "collect", heights = c(16, 8)) +
