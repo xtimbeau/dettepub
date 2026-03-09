@@ -18,7 +18,7 @@ library(marquee)
 {{wordcount}} mots
 :::
 
-La dette publique française est à un niveau record depuis la seconde guerre mondiale. Doit-on s'en inquieter ? Quelle est logique à laquelle nous sommes confrontés ? En analysant la dynamique de la dette, on peut comprendre l'importance de l'écart en le taux souverain et la croissance de l'économie et conclure que, si le niveau de la dette publique n'est pas un problème, il n'est pas possible de maintenir des déficits publics aussi creusés qu'en 2025 bien longtemps.
+La dette publique française est à un niveau record depuis la seconde guerre mondiale. Doit-on s'en inquiéter ? Quelle est logique à laquelle nous sommes confrontés ? En analysant la dynamique de la dette, on peut comprendre l'importance de l'écart en le taux souverain et la croissance de l'économie et conclure que, si le niveau de la dette publique n'est pas un problème, il n'est pas possible de maintenir des déficits publics aussi creusés qu'en 2025 bien longtemps.
 
 ```{r}
 #| label: fig-spread
