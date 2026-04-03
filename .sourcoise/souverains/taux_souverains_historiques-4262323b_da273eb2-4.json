@@ -1,0 +1,20 @@
+{
+  "timing": [1.5858],
+  "date": ["2026-03-30 14:47:20.380396"],
+  "size": [630664],
+  "args": [],
+  "lapse": ["day"],
+  "src": ["souverains/taux_souverains_historiques.r"],
+  "src_hash": ["18ac9ea4a9fb04521bf172756c383046a61a878e"],
+  "arg_hash": ["4262323b"],
+  "track_hash": [0],
+  "track": [],
+  "wd": ["file"],
+  "qmd_file": [],
+  "src_in": ["project"],
+  "data_hash": ["d2a7959ca29b10e31391d776eb9e65b3"],
+  "priority": [10],
+  "file_size": [163018],
+  "data_date": ["2026-03-30 14:47:20.498396"],
+  "data_file": ["taux_souverains_historiques-4262323b_d2a7959ca29b10e31391d776eb9e65b3.qs2"]
+}

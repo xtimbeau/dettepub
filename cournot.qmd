@@ -11,28 +11,54 @@ library(tidyquant)
 library(tidyverse)
 library(lubridate)
 library(ggiraph)
+
+euro_yf <- tq_get("EURUSD=X", from = "1990-01-01") |>
+  mutate(com = "euro")
+euro_dollar <- euro_yf |> 
+  select(date, eur = close)
 brent_yf <- tq_get("BZ=F", from = "1990-01-01") |>
-  mutate(com = "brent") |>
-  add_row(symbol = "BZ=F", date = ymd("2026-03-09"), close = 100.3, open = 115.8, com = "brent")
+  mutate(com = "brent") |>  
+  left_join(euro_dollar, join_by(date)) |> 
+  mutate(
+    across(c(open, close, high, low), ~.x * eur))
 dow_yf <- tq_get("YM=F", from = "1990-01-01") |>
   mutate(com = "dow")
 gaz_yf <- tq_get("NG=F", from = "1990-01-01") |>
-  mutate(com = "gaz")
+  mutate(com = "gaz") |> 
+  left_join(euro_dollar, join_by(date)) |> 
+  mutate(
+    across(c(open, close, high, low), ~.x * eur))
+ttf_yf <- tq_get("TTF=F", from = "1990-01-01") |>
+  mutate(com = "ttf")
 oil_yf <- tq_get("CL=F", from = "1990-01-01") |>
-  mutate(com = "oil")
+  mutate(com = "oil") |> 
+    left_join(euro_dollar, join_by(date)) |> 
+  mutate(
+    across(c(open, close, high, low), ~.x * eur))
 gold_yf <- tq_get("GC=F", from = "1990-01-01") |>
-  mutate(com = "gold")
+  mutate(com = "gold") |> 
+    left_join(euro_dollar, join_by(date)) |> 
+  mutate(
+    across(c(open, close, high, low), ~.x * eur))
 bills_yf <- tq_get("ZN=F", from = "1990-01-01") |>
   mutate(com = "10y bills")
-euro_yf <- tq_get("EURUSD=X", from = "1990-01-01") |>
-  mutate(com = "euro dollar")
 bitcoin_yf <- tq_get("BTC-USD", from = "1990-01-01") |>
-  mutate(com = "bitcoin")
+  mutate(com = "bitcoin") |> 
+    left_join(euro_dollar, join_by(date)) |> 
+  mutate(
+    across(c(open, close, high, low), ~.x * eur))
 fert_yf <- tq_get("YAR.OL", from = "1990-01-01") |>
-  mutate(com = "fertilizers")
+  mutate(com = "fertilizers") |>  
+  left_join(euro_dollar, join_by(date)) |> 
+  mutate(
+    across(c(open, close, high, low), ~.x * eur))
 corn_yf <- tq_get("ZC=F", from = "1990-01-01") |>
-  mutate(com = "corn")
-data <- bind_rows(brent_yf, dow_yf, gaz_yf, corn_yf, gold_yf, fert_yf, bitcoin_yf, euro_yf, bills_yf) |>
+  mutate(com = "corn") |> 
+  left_join(euro_dollar, join_by(date)) |> 
+  mutate(
+    across(c(open  close, high, low), ~.x * eur))
+
+data <- bind_rows(brent_yf, dow_yf, gaz_yf, ttf_yf, corn_yf, gold_yf, fert_yf, bitcoin_yf, euro_yf, bills_yf) |>
   mutate(ukr = date - ymd("2022-02-24"),
          iran = date - ymd("2026-02-28"),
          twelve = date - ymd("2025-06-13")) |>
@@ -40,7 +66,8 @@ data <- bind_rows(brent_yf, dow_yf, gaz_yf, corn_yf, gold_yf, fert_yf, bitcoin_y
   pivot_longer(cols = c(ukr, iran, twelve), names_to = "event", values_to = "days") |>
   group_by(com, event) |>
   mutate(
-    across(c(high, low, open, close), ~.x/.x[days == max(days[days <=0])], .names = "{.col}_r")) |>
+    across(c(high, low, open, close), ~.x/.x[days == max(days[days <=0])], .names = "{.col}_r"),
+    across(c(high, low, open, close), ~.x-.x[days == max(days[days <=0])], .names = "{.col}_d")) |>
   ungroup() |>
   mutate(days = as.numeric(days),
          event = factor(event, c("iran", "twelve", "ukr")),
@@ -49,11 +76,10 @@ data <- bind_rows(brent_yf, dow_yf, gaz_yf, corn_yf, gold_yf, fert_yf, bitcoin_y
   filter(between(days, -60, 60))
 ```
 
-
-## Matières premières
+## Matières premières (%)
 
 ```{r}
-gg1 <- ggplot(data |> filter(com %in% c("brent", "gaz", "fertilizers", "corn"))) +
+gg1 <- ggplot(data |> filter(com %in% c("brent", "gaz", "fertilizers", "ttf"))) +
   aes(x=days, y = (open_r + close_r)/2,  color = event, group = event ) +
   geom_line() +
   geom_pointrange_interactive(
@@ -64,8 +90,8 @@ gg1 <- ggplot(data |> filter(com %in% c("brent", "gaz", "fertilizers", "corn")))
   scale_x_continuous(limits = c(-10, 60)) +
   geom_vline(xintercept = 0, linewidth = 0.1, color = "black", linetype = "11") +
   geom_hline(yintercept = 1, linewidth = 0.1, color = "black", linetype = "11") +
-  scale_y_log10(limits = c(0.8, 1.6),
-                breaks = c(0.8, 0.9, 1, 1.1, 1.2, 1.5),
+  scale_y_log10(limits = c(0.8, 2),
+                breaks = c(8:20/10),
                 labels = ~str_c(round((.x-1)*100), "%"),
                 oob = scales::oob_keep) +
   xlab("Days since begining of conflict")+
@@ -78,6 +104,34 @@ gg1 <- ggplot(data |> filter(com %in% c("brent", "gaz", "fertilizers", "corn")))
     legend.position = "top",
     legend.direction = "horizontal")
  ofce::girafy(gg1, 1.25)
+
+ ```
+
+## Matières premières (euros) 
+
+```{r}
+gg2 <- ggplot(data |> filter(com %in% c("brent", "gaz", "fertilizers", "ttf"))) +
+  aes(x=days, y = (open + close)/2,  color = event, group = event ) +
+  geom_line() +
+  geom_point_interactive(
+    aes(
+      y = (open + close)/2,
+      tooltip = tooltip, data_id = days),
+    hover_nearest = TRUE, size = 0.1) +
+  scale_x_continuous(limits = c(-10, 60)) +
+  geom_vline(xintercept = 0, linewidth = 0.1, color = "black", linetype = "11") +
+  geom_hline(yintercept = 1, linewidth = 0.1, color = "black", linetype = "11") +
+  # scale_y_log10(oob = scales::oob_keep, limits = c(2.5, NA)) +
+  xlab("Days since begining of conflict")+
+  scale_color_manual(
+    name = "",
+    labels = c("Guerre US/Israël vs Iran", "Guerre des 12 jours", "Invasion de l'Ukraine par la Russie"),
+    values = c("iran" = "purple3", "twelve"="pink1", "ukr" = "pink3")) +
+  facet_wrap(vars(com), scales = "free_y") +
+  ofce::theme_ofce(
+    legend.position = "top",
+    legend.direction = "horizontal")
+ ofce::girafy(gg2, 1.25)
 
 ```
 
@@ -111,4 +165,3 @@ gg1 <- ggplot(data |> filter(com %in% c("brent", "gaz", "fertilizers", "corn")))
  ofce::girafy(gg2, 1.25)
 
 ```
-

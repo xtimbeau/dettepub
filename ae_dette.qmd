@@ -27,9 +27,9 @@ La dette publique française est à un niveau record depuis la seconde guerre mo
 tsh <- source_data("souverains/taux_souverains_historiques.R", metadata = TRUE)
 ant <- tribble(
   ~time, ~y , ~geo, ~label, ~hjust,
-  "2011-09-01", 6, "IT", "Italie", 1,
-  "2012-08-01", 3, "FR", "France", 0,
-  "2012-01-01", 1.1, "DE", "Allemagne", 0.5 ) |> 
+  "2020-09-01", 6, "IT", "Italie", 1,
+  "2020-08-01", 3, "FR", "France", 0,
+  "2020-01-01", 1.1, "DE", "Allemagne", 0.5 ) |> 
   mutate(date = ymd(time))
 ants <- tribble(
   ~time, ~y , ~geo, ~label, ~hjust,
@@ -79,6 +79,7 @@ deg <- tribble(
   mutate(
     date = ymd(date),
     time = floor_date(date, "month")+days(15)) |> 
+  filter(date >= "2020-01-01") |> 
   left_join(data_graph |> filter(geo == "FR") |> select(time = date, taux, spread), by = c("time"))
 
 gtaux <- ggplot(data_graph) +
@@ -90,24 +91,24 @@ gtaux <- ggplot(data_graph) +
     aes(label = label, hjust = hjust, y = y), show.legend = FALSE) +
   labs(y="taux, en % par an",
     x = NULL)+
-  ofce::scale_color_pays("eurostat", name = "!!1, !!2, !!3", guide = "marquee") +
+  ofce::scale_color_pays("eurostat") +
   ofce::scale_ofce_date(
     date_breaks = "1 year",
     date_minor_breaks = "1 month",
     labels = ofce::date1,
     expand = expansion(c(0.03, 0.03))) 
 
-gspread <-  ggplot(data_graph |> filter(geo != "DE")) +
+gspread <-  ggplot(data_graph |> filter(geo != "DE", date>= "2020-01-01")) +
   geom_segment(
     data = deg |> filter(date>= "2020-01-01"), 
     aes( x = date, xend = date, y=0, yend =spread, group=NULL, color = type),
     linewidth=0.1, show.legend = FALSE) +
   geom_point(data = deg |> filter(date>= "2020-01-01"),
-             aes(x=date, y=0.075, color = type), shape = 17, size = 1, show.legend = FALSE) +
+             aes(x=date, y=0.075, color = type), shape = 17, size = 2, show.legend = FALSE) +
   scale_color_manual(values = c("p" = "firebrick", "r"="seagreen")) + 
   ggnewscale::new_scale_color() +
   geom_marquee(
-    data = ants, 
+    data = ants |> filter(date>= "2020-01-01"), 
     size = 8, size.unit = "pt",
     aes(x = date, label = label, hjust = hjust, y = y, color = geo), show.legend = FALSE) +
   geom_hline(yintercept = 0, linewidth=0.25) +
