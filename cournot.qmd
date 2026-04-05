@@ -105,9 +105,9 @@ gg1 <- ggplot(data |> filter(com %in% c("brent", "gaz", "fertilizers", "ttf"))) 
     legend.direction = "horizontal")
  ofce::girafy(gg1, 1.25)
 
- ```
+```
 
-## Matières premières (euros) 
+## Matières premières (euros)
 
 ```{r}
 gg2 <- ggplot(data |> filter(com %in% c("brent", "gaz", "fertilizers", "ttf"))) +
