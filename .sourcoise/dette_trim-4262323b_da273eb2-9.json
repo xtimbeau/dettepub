@@ -1,0 +1,20 @@
+{
+  "timing": [0.6775],
+  "date": ["2026-06-04 09:45:01.023996"],
+  "size": [106080],
+  "args": [],
+  "lapse": ["1 day"],
+  "src": ["dette_trim.r"],
+  "src_hash": ["f80c8fcb989db99a9b0299de95b3d08cdb1ffd25"],
+  "arg_hash": ["4262323b"],
+  "track_hash": [0],
+  "track": [],
+  "wd": ["file"],
+  "qmd_file": [],
+  "src_in": ["project"],
+  "data_hash": ["e4f6d557111b748c5f7d7d9f7c007973"],
+  "priority": [10],
+  "file_size": [34768],
+  "data_date": ["2026-06-04 09:45:01.067871"],
+  "data_file": ["dette_trim-4262323b_e4f6d557111b748c5f7d7d9f7c007973.qs2"]
+}

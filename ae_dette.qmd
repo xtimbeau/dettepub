@@ -164,19 +164,29 @@ Le panneau (b) synthétise la dynamique de la dette. Le solde stabilisant la det
 #| fig-cap: La dette et sa dynamique de 1995 à 2025
 #| fig-asp: 1
 
-dette_trim <- source_data("dette_trim.r")$trim |> 
+dette_trim <- source_data("dette_trim.r", lapse="1 day")$trim |> 
   mutate(time = as.Date(time)) |> 
   filter(time >= "2007-01-01") |> 
-  mutate(time = factor(time))
+  mutate(
+    date = time, 
+    time = factor(time))
 txt <- tribble(
   ~x, ~y, ~text, ~hjust, ~width,
   "2024-01-01", -0.02, "avec le taux souverain pondéré", 0, 1,
   "2016-01-01", -0.035, "avec le taux souverain courant", 1, 2 )
 sx <- scale_x_discrete(
-    breaks = str_c(seq(2007, 2025, by=1), "-01-01"),
-    minor_breaks = str_c(seq(2007, 2025, by=1), "-01-01"),
-    labels = c( "2007", str_c("0", 8:9), 10:25),
-    expand = expansion(0.03, 0.03))
+    breaks = str_c(seq(2007, 2026, by=1), "-01-01"),
+    minor_breaks = str_c(seq(2007, 2026, by=1), "-01-01"),
+    labels = c( "2007", str_c("0", 8:9), 10:26),
+    expand = expansion(0.03, 0.08))
+txt_last <- dette_trim |> 
+  filter(date == max(date)) |> 
+  transmute(
+    date, time,
+    ec) |> 
+  pivot_longer(c(ec), names_to = "variable", values_to = "y") |> 
+  mutate(
+    text = fmt_pct(y, 1))
 
 gec <- ggplot(dette_trim) +
   aes(x=time) +
@@ -184,11 +194,55 @@ gec <- ggplot(dette_trim) +
   geom_step(aes(y = ec, group=1), direction = "mid", linewidth = 0.25) +
   labs(y="% par an",
        x = NULL,
-       subtitle= "(a) r - g (écart critique)") +
+       subtitle= "(a) r - g (écart critique, taux de marché)") +
+  scale_fill_manual(values = c("p" = "red", "n"= "green"))+
+  sx+
+  geom_marquee(
+    data=txt_last, 
+    aes(time, y, label = text),
+    hjust =0,
+    width = unit(2, "cm"),
+    size = 6, size.unit = "pt", 
+    position = position_nudge(x = 0.6)) + 
+  scale_y_continuous(labels = label_percent(1)) +
+  guides(x = guide_axis(minor.ticks = TRUE))
+
+txt_last <- dette_trim |> 
+  filter(date == max(date)) |> 
+  transmute(
+    date, time,
+    ec_app) |> 
+  pivot_longer(c(ec_app), names_to = "variable", values_to = "y") |> 
+  mutate(
+    text = fmt_pct(y, 1))
+
+gec_app <- ggplot(dette_trim) +
+  aes(x=time) +
+  geom_col(aes(y=ec_app, fill = ecap), alpha = 0.25, width=1, show.legend = FALSE) +
+  geom_step(aes(y = ec_app, group=1), direction = "mid", linewidth = 0.25) +
+  geom_marquee(
+    data=txt_last, 
+    aes(time, y, label = text),
+    hjust =0,
+    width = unit(2, "cm"),
+    size = 6, size.unit = "pt", 
+    position = position_nudge(x = 0.6)) +
+  labs(y="% par an",
+       x = NULL,
+       subtitle= "(a) r - g (écart critique, taux pondéré)") +
   scale_fill_manual(values = c("p" = "red", "n"= "green"))+
   sx+
   scale_y_continuous(labels = label_percent(1)) +
   guides(x = guide_axis(minor.ticks = TRUE))
+
+txt_last <- dette_trim |> 
+  filter(date == max(date)) |> 
+  transmute(
+    date, time,
+    dm) |> 
+  pivot_longer(c(dm), names_to = "variable", values_to = "y") |> 
+  mutate(
+    text = fmt_pct(y, 1))
 
 gdm <- ggplot(dette_trim) +
   aes(x=time) +
@@ -198,21 +252,37 @@ gdm <- ggplot(dette_trim) +
        x = NULL,
        subtitle= "(c) Dette publique (Maastricht)") +
   sx +
+  geom_marquee(
+    data=txt_last, 
+    aes(time, y, label = text),
+    hjust =0,
+    width = unit(2, "cm"),
+    size = 6, size.unit = "pt", 
+    position = position_nudge(x = 0.6)) +
   scale_y_continuous(labels = label_percent(1)) +
   guides(x = guide_axis(minor.ticks = TRUE))
 
 txt <- tribble(
   ~x, ~y, ~text, ~hjust, ~width,
-  "2009-01-01", -0.08, "Solde public effectif", 0, 1,
+  "2009-01-01", -0.09, "Solde public effectif", 0, 1,
   "2010-04-01", 0.01, "Solde stabilisant la dette publique", 0, 2 )
+
+txt_last <- dette_trim |> 
+  filter(date == max(date)) |> 
+  transmute(
+    date, time,
+    ss_app, b9) |> 
+  pivot_longer(c(ss_app, b9), names_to = "variable", values_to = "y") |> 
+  mutate(
+    text = fmt_pct(y, 1))
 
 gssp <- ggplot(dette_trim) +
   aes(x=time) +
   geom_hline(yintercept = 0, linewidth = 0.25, color = "grey25")+
-  geom_step(aes(y = ss, group=1),
+  geom_step(aes(y = ss_app, group=1),
             direction = "mid", linewidth = 0.25, linetype = '11', color = "grey25") +
-  geom_step(aes(y = def_ma, group=1), direction = "mid", linewidth = 0.25) +
-  geom_rect(aes(width = 1, ymin = def_ma, ymax=ss, fill = sppp),
+  geom_step(aes(y = b9, group=1), direction = "mid", linewidth = 0.25) +
+  geom_rect(aes(width = 1, ymin = b9, ymax=ss_app, fill = sppap),
             linewidth = 0.5,  color = NA, alpha = 0.25, show.legend = FALSE) +
   scale_fill_manual(values = c("p" = "red", "n"= "green"))+
   geom_marquee(
@@ -220,6 +290,14 @@ gssp <- ggplot(dette_trim) +
     aes(x, y, hjust =hjust, label = text),
     width = unit(2, "cm"),
     size = 7, size.unit = "pt") + 
+  geom_marquee(
+    data=txt_last, 
+    aes(time, y, label = text),
+    hjust =0,
+    width = unit(2, "cm"),
+    size = 6, size.unit = "pt", 
+    position = position_nudge(x = 0.6)) + 
+  
   labs(y="% du PIB",
        x = NULL, 
        subtitle= "(b) Solde et solde stabilisant la dette") +
@@ -227,14 +305,14 @@ gssp <- ggplot(dette_trim) +
   scale_y_continuous(labels = label_percent(1)) +
   guides(x = guide_axis(minor.ticks = TRUE))
 
-gfinal <- gec/gssp/gdm  +
+gfinal <- (gec/gec_app/gssp/gdm  +
   plot_layout(axes = "collect_x") &
   theme(plot.margin = margin(0),
         axis.text.x = element_text(size = rel(0.75), hjust = 0),
-        plot.subtitle = element_marquee(size=rel(0.75)))
+        plot.subtitle = element_marquee(size=rel(0.75))) ) 
 
-ggsave("dette.svg", plot = gfinal, device = "svg", width = 6, height=6 )
-gfinal
+ggsave("dette.svg", plot = gfinal, device ="svg", width = 1600, height=1000, units = "px" )
+gfinal 
 ```
 
 Ce solde effectif est indiqué sur le panneau (c) par un trait plein et l'écart entre le solde effectif et le solde stabilisant est l'augmentation de la dette (coloré en vert lorsque la dette en point de PIB décroît et en rouge lorsqu'elle augmente). La période de crise sanitaire a conjugué une forte augmentation du solde qui stabilise la dette publique et une forte diminution du solde effectif, sous l'effet du confinement et des mesures massives de soutien. La hausse de la dette à cette occasion a été de 20 points de PIB. Le fort effet de la taxe inflationniste a ensuite modéré le ratio dette sur PIB, imposant aux détenteurs de dette une perte en capital au bénéfice de l’État. A la fin de l'épisode d'inflation, le solde stabilisant la dette revient vers des valeurs habituelles (supérieur d'un demi point à celui de 2019 comme on l'a vu plus haut). Mais le solde effectif ne s'est pas résorbé, suite à des prévisions de recettes erronées en 2023 et 2024 et la dissolution de l'Assemblée Nationale en juin 2024 qui a paralysé le processus budgétaire.

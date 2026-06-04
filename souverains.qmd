@@ -57,10 +57,10 @@ gtaux <-  ggplot(data_graph) +
   geom_line(aes(linewidth = freq), show.legend = FALSE) +
   geom_point_interactive(
     aes(tooltip = tooltip, data_id = date, fill = geo, size = freq),
-    col = "white", shape=21, stroke = 0.1,
+    col = "white", shape=21, stroke = 0.2,
     hover_nearest = TRUE) +
   scale_size_manual(values = c(daily = 0.25, monthly = 1)) +
-  scale_linewidth_manual(values = c(daily = 0.25, monthly = 0.5)) +
+  scale_linewidth_manual(values = c(daily = 0.1, monthly = 0.25)) +
   labs(y="Taux (en %)",
     x = NULL,
     fill=NULL)+
@@ -81,10 +81,10 @@ gspread <-  ggplot(data_graph |> filter(geo != "DE")) +
   geom_line(aes(linewidth = freq), show.legend = FALSE) +
   geom_point_interactive(
     aes(tooltip = tooltip, data_id = date, fill = geo, size = freq),
-    col = "white", shape=21, stroke = 0.1,
+    col = "white", shape=21, stroke = 0.2,
     hover_nearest = TRUE) +
   scale_size_manual(values = c(daily = 0.25, monthly = 1)) +
-  scale_linewidth_manual(values = c(daily = 0.25, monthly = 0.5)) +
+  scale_linewidth_manual(values = c(daily = 0.1, monthly = 0.25)) +
   geom_smooth(method = "lm",
               formula = y ~1, 
               linewidth = 0.1,

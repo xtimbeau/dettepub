@@ -77,6 +77,27 @@ apu_a <- melodi::get_all_data("DD_CNA_APU") |>
   arrange(time) |>
   select(-q)
 
+dd_aggregats <- melodi::get_all_data("DD_CNA_AGREGATS")
+
+pib_a <- dd_aggregats |>
+  filter(REF_SECTOR == "S1", STO=="B1GQ", UNIT_MEASURE == "XDC", PRICES == "V", COUNTERPART_AREA =="W0") |>
+  arrange(desc(TIME_PERIOD)) |>
+  select(time = TIME_PERIOD, pib = OBS_VALUE)
+
+b9_a <- dd_aggregats |>
+  filter(REF_SECTOR == "S13", STO=="B9", UNIT_MEASURE == "XDC") |>
+  arrange(desc(TIME_PERIOD)) |>
+  select(time = TIME_PERIOD, b9 = OBS_VALUE) |>
+  left_join(pib_a, join_by(time)) |>
+  transmute(
+    time = ymd(time, truncated = 2),
+    b9 = b9/pib) |>
+  bind_rows(tibble(time = ymd("2026-01-01"), b9 = -4.8/100)) |>
+  cross_join(tibble(q = 1:4)) |>
+  mutate(time = ymd(str_c(year(time),"-", (q-1)*3+1, "-01"))) |>
+  arrange(time) |>
+  select(-q)
+
 dette_trim <- "DETTE-TRIM-APU-2020" |>
   get_idbank_list() |>
   filter(
@@ -94,11 +115,16 @@ dette_trim <- "DETTE-TRIM-APU-2020" |>
       "010777616" ~ "maastricht",
       "010777611" ~ "nette")) |>
   pivot_wider(names_from = code) |>
-  left_join(pib, by="time") |>
-  left_join(d41 |> select(time, d41 =net), by = "time") |>
-  left_join(apu_a, by = "time") |>
-  left_join(taux_eu, by = "time") |>
+  full_join(pib, by="time") |>
+  full_join(d41 |> select(time, d41 =net), by = "time") |>
+  full_join(b9_a, by = "time") |>
+  full_join(taux_eu, by = "time") |>
   arrange(time) |>
+  mutate(
+   dette_e = lag(maastricht) - lag(b9) * lag(pib)/1000,
+   maastricht = if_else(is.na(maastricht), dette_e, maastricht)
+  ) |>
+  drop_na(maastricht) |>
   mutate(
     d414 = slider::slide_dbl(d41/1000, ~mean(.x)*4, .before=3),
     rapp = d414/maastricht,
@@ -122,8 +148,11 @@ dette_trim <- "DETTE-TRIM-APU-2020" |>
     ssp = -lag(dm)* (g4-r10ans/100)/(1+g4),
     ssp_app = -lag(dm)* (g4-rapp)/(1+g4),
     ecp = ifelse(ec>0, "p", "n"),
-    sppp = ifelse(ss>def_ma, "p", "n"),
-    time = factor(time, time))
+    ecap = ifelse(ec_app>0, "p", "n"),
+    sppp = ifelse(ss>b9, "p", "n"),
+    sppap = ifelse(ss_app>b9, "p", "n"),
+    time = factor(time, time)) |>
+  arrange(desc(time))
 
 
 return(list(trim = dette_trim, nego = nego))
